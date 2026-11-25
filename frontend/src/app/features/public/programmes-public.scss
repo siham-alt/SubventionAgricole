@@ -1,0 +1,226 @@
+:host {
+  --vert-olive: #1B5E20;
+  --vert: #2E7D32;
+  --vert-pale: #E8F5E9;
+  --terre-cuite: #C1440E;
+  --papier: #FBF8F2;
+  --texte: #1F2A1F;
+  --texte-doux: #4B5A4B;
+
+  display: block;
+  background: var(--papier);
+  color: var(--texte);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.programmes-page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+}
+
+// ===== HERO =====
+.hero {
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(27, 94, 32, 0.12);
+  margin-bottom: 2.5rem;
+}
+
+.hero-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--terre-cuite);
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.hero h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(1.9rem, 4vw, 2.6rem);
+  line-height: 1.2;
+  margin: 0 0 1rem;
+  color: var(--vert-olive);
+}
+
+.hero-lede {
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--texte-doux);
+  max-width: 60ch;
+  margin: 0 0 1.75rem;
+}
+
+.recherche {
+  max-width: 480px;
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 0.92rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid rgba(27, 94, 32, 0.2);
+    border-radius: 8px;
+    background: white;
+    color: var(--texte);
+
+    &:focus-visible {
+      outline: 2px solid var(--vert);
+      outline-offset: 1px;
+    }
+
+    &::placeholder {
+      color: var(--texte-doux);
+    }
+  }
+}
+
+// ===== ETATS =====
+.loading-text,
+.empty-state {
+  text-align: center;
+  color: var(--texte-doux);
+  padding: 3rem 0;
+}
+
+// ===== GRID =====
+.programmes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 3.5rem;
+
+  @media (max-width: 720px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.programme-card {
+  background: white;
+  border: 1px solid rgba(27, 94, 32, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    border-color: rgba(27, 94, 32, 0.28);
+    transform: translateY(-2px);
+  }
+
+  h3 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+    color: var(--vert-olive);
+    margin: 0 0 0.5rem;
+  }
+}
+
+.programme-desc {
+  font-size: 0.9rem;
+  color: var(--texte-doux);
+  line-height: 1.55;
+  margin: 0 0 1rem;
+}
+
+.programme-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.badge {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+  border-radius: 20px;
+  background: var(--vert-pale);
+  color: var(--vert-olive);
+
+  &.accent {
+    background: rgba(193, 68, 14, 0.1);
+    color: var(--terre-cuite);
+  }
+}
+
+.programme-docs {
+  margin-bottom: 1.25rem;
+}
+
+.docs-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--texte-doux);
+  margin-bottom: 0.4rem;
+}
+
+.docs-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.doc-tag {
+  font-size: 0.78rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  background: var(--papier);
+  border: 1px solid rgba(27, 94, 32, 0.14);
+  color: var(--texte);
+}
+
+.programme-cta {
+  margin-top: auto;
+  align-self: flex-start;
+  color: var(--vert-olive);
+  font-weight: 600;
+  font-size: 0.92rem;
+  text-decoration: none;
+  padding-top: 0.5rem;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// ===== SUITE =====
+.suite {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(27, 94, 32, 0.12);
+
+  p {
+    color: var(--texte-doux);
+    margin-bottom: 1rem;
+  }
+}
+
+.suite-liens {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.lien-secondaire {
+  color: var(--vert-olive);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px solid transparent;
+
+  &:hover {
+    border-bottom-color: var(--vert-olive);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .programme-card:hover { transform: none; }
+}

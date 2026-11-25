@@ -1,0 +1,99 @@
+.page { max-width: 1000px; }
+
+h1 { font-size: 22px; color: #263238; margin: 0 0 4px; }
+.subtitle { color: #607d8b; font-size: 13px; margin-bottom: 20px; }
+
+.filter-chips { display: flex; gap: 8px; margin-bottom: 18px; }
+
+.chip {
+  padding: 8px 16px; border: 1.5px solid #ECEFF1; border-radius: 20px;
+  background: #fff; font-size: 12px; font-weight: 600; color: #607d8b; cursor: pointer;
+  &.active { background: #2E7D32; color: #fff; border-color: #2E7D32; }
+}
+
+.card { background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(27,94,32,0.06); padding: 12px 20px; }
+.loading-text, .empty-text { text-align: center; color: #90a4ae; padding: 50px 0; }
+
+.messages-list { display: flex; flex-direction: column; }
+
+.message-row {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 14px;
+  padding: 16px 8px; border-bottom: 1px solid #f0f0f0; cursor: pointer;
+  transition: background 0.15s;
+  &:hover { background: #fafafa; }
+  &.non-traite { background: #fffdf5; }
+}
+
+.message-main { flex: 1; }
+
+.message-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+.message-nom { font-size: 13px; font-weight: 700; color: #263238; }
+
+.dossier-tag {
+  font-size: 10px; background: #e3f2fd; color: #1565c0;
+  padding: 2px 8px; border-radius: 10px; font-weight: 600;
+}
+
+.statut-tag {
+  font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600;
+  &.nouveau, &.en_cours { background: #fff8e1; color: #8a6d00; }
+  &.traite { background: #e8f5e9; color: #1B5E20; }
+}
+
+.message-sujet { font-size: 13px; font-weight: 600; color: #1B5E20; margin-bottom: 2px; }
+.message-apercu {
+  font-size: 12px; color: #607d8b;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 500px;
+}
+.message-meta { font-size: 10px; color: #90a4ae; margin-top: 4px; }
+
+.reassign-select {
+  padding: 6px 10px; border: 1px solid #ECEFF1; border-radius: 6px; font-size: 11px;
+}
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+
+.modal {
+  background: #fff; border-radius: 16px; padding: 26px; max-width: 540px; width: 90%;
+  max-height: 85vh; overflow-y: auto;
+
+  h3 { font-size: 16px; color: #1B5E20; margin: 0 0 6px; }
+}
+
+.modal-meta { font-size: 11px; color: #90a4ae; margin-bottom: 14px; }
+.modal-message {
+  font-size: 13px; color: #263238; line-height: 1.6;
+  background: #f8faf8; padding: 14px; border-radius: 10px; margin-bottom: 14px;
+}
+
+.lien-dossier {
+  display: inline-block; font-size: 12px; color: #2E7D32; font-weight: 600;
+  text-decoration: none; margin-bottom: 16px;
+  &:hover { text-decoration: underline; }
+}
+
+.reponse-label { display: block; font-size: 12px; font-weight: 600; color: #263238; margin-bottom: 6px; }
+
+textarea {
+  width: 100%; padding: 12px; border: 1.5px solid #ECEFF1; border-radius: 8px;
+  font-size: 13px; font-family: inherit; box-sizing: border-box; resize: vertical;
+  &:focus { outline: none; border-color: #2E7D32; }
+}
+
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+
+.btn-secondary {
+  padding: 10px 18px; background: #fff; color: #607d8b;
+  border: 1.5px solid #ECEFF1; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+  &:hover { background: #f5f5f5; }
+}
+
+.btn-primary {
+  padding: 10px 20px; background: #2E7D32; color: #fff; border: none;
+  border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+  &:hover:not(:disabled) { background: #1B5E20; }
+  &:disabled { opacity: 0.5; }
+}

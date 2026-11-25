@@ -1,0 +1,23 @@
+$vert-principal : #2E7D32;
+$vert-fonce      : #1B5E20;
+$dore            : #D4A72C;
+$blanc           : #FFFFFF;
+$fond            : #F8FAF8;
+$gris-clair      : #ECEFF1;
+$gris-texte      : #263238;
+
+:root {
+  --color-primary       : #{$vert-principal};
+  --color-primary-dark  : #{$vert-fonce};
+  --color-accent        : #{$dore};
+  --color-white         : #{$blanc};
+  --color-background    : #{$fond};
+  --color-light-gray    : #{$gris-clair};
+  --color-text          : #{$gris-texte};
+
+  --radius-sm  : 8px;
+  --radius-md  : 10px;
+  --radius-lg  : 12px;
+  --shadow-card: 0 2px 12px rgba(27, 94, 32, 0.06);
+  --shadow-hover: 0 8px 24px rgba(27, 94, 32, 0.12);
+}

@@ -1,0 +1,63 @@
+<div class="page">
+  <h1>Gestion des notifications</h1>
+  <p class="subtitle">Envoyez une notification à un groupe d'utilisateurs</p>
+
+  <div class="card">
+    @if (successMessage()) {
+      <div class="alert-success">{{ successMessage() }}</div>
+    }
+
+    <form [formGroup]="form" class="form-stack">
+      <div class="form-group">
+        <label>Titre</label>
+        <input type="text" formControlName="titre" placeholder="Maintenance planifiée" />
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea formControlName="message" rows="4" placeholder="Détails de la notification..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Type</label>
+          <select formControlName="type">
+            <option value="info">Information</option>
+            <option value="success">Succès</option>
+            <option value="warning">Avertissement</option>
+            <option value="danger">Urgent</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Destinataires</label>
+          <select formControlName="cible">
+            <option value="tous">Tous les utilisateurs</option>
+            <option value="agriculteurs">Agriculteurs uniquement</option>
+            <option value="agents">Agents uniquement</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn-primary" (click)="envoyer()" [disabled]="loading()">
+        {{ loading() ? 'Envoi en cours...' : '📤 Envoyer la notification' }}
+      </button>
+    </form>
+    <div class="card">
+  <h2>📜 Historique des envois</h2>
+  @if (historique().length === 0) {
+    <p class="empty-text">Aucune notification envoyée pour le moment.</p>
+  } @else {
+    <div class="historique-list">
+      @for (h of historique(); track h.created_at) {
+        <div class="historique-item">
+          <span class="type-dot" [class]="h.type"></span>
+          <div class="historique-content">
+            <div class="historique-titre">{{ h.titre }}</div>
+            <div class="historique-message">{{ h.message }}</div>
+            <div class="historique-date">{{ h.created_at | date: 'dd/MM/yyyy à HH:mm' }}</div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+  </div>
+</div>

@@ -1,0 +1,387 @@
+<div class="home-page">
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="header-inner">
+      <a routerLink="/" class="brand">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 21c0-6 4-9 8-10-1 6-3 10-8 10Z" fill="currentColor"/><path d="M12 21c0-7-4-11-9-12 1 7 3 12 9 12Z" fill="currentColor" opacity=".55"/></svg>
+        </span>
+        <span class="brand-text">Subventions Agricoles</span>
+      </a>
+
+      <nav class="main-menu">
+        <a routerLink="/">Accueil</a>
+        <a routerLink="/programmes">Programmes de subvention</a>
+        <a routerLink="/guide">Guide</a>
+        <a routerLink="/faq">FAQ</a>
+        <a routerLink="/contact">Contact</a>
+      </nav>
+
+      <div class="header-actions">
+        @if (auth.isAuthenticated()) {
+          <div class="user-menu" [class.open]="menuUtilisateurOuvert()">
+            <button class="avatar-trigger" (click)="toggleMenuUtilisateur()">
+  @if (auth.photoUrl(); as photo) {
+    <img [src]="photo" class="avatar avatar-img" alt="Photo de profil" />
+  } @else {
+    <span class="avatar">{{ initiales() }}</span>
+  }
+  <svg class="chevron-down" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+            @if (menuUtilisateurOuvert()) {
+              <div class="user-dropdown">
+              <div class="user-dropdown-header">
+  @if (auth.photoUrl(); as photo) {
+    <img [src]="photo" class="avatar avatar-lg avatar-img" alt="Photo de profil" />
+  } @else {
+    <span class="avatar avatar-lg">{{ initiales() }}</span>
+  }
+  <div class="user-dropdown-info">
+    <strong>{{ auth.currentUser()?.name }}</strong>
+    <span class="user-email">{{ auth.currentUser()?.email }}</span>
+  </div>
+</div>
+                <div class="user-dropdown-divider"></div>
+                <button class="user-dropdown-item" (click)="allerVersEspace(); toggleMenuUtilisateur()">
+                  <svg class="item-icon" viewBox="0 0 24 24" fill="none"><path d="M3 11l9-7 9 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Mon espace
+                </button>
+                <button class="user-dropdown-item danger" (click)="deconnexion()">
+                  <svg class="item-icon" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17l5-5-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  Déconnexion
+                </button>
+              </div>
+            }
+          </div>
+        } @else {
+          <a routerLink="/login" class="btn-outline">Connexion</a>
+          <a routerLink="/register" class="btn-fill">Créer un compte</a>
+        }
+      </div>
+
+      <button class="burger" (click)="toggleMenuMobile()" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <span class="hero-eyebrow">Plateforme nationale</span>
+        <h1>Vos subventions agricoles, du dépôt au versement, en ligne</h1>
+        <p>
+          Déposez votre dossier en ligne, suivez son traitement en temps réel et communiquez avec
+          les services du ministère en toute simplicité.
+        </p>
+        <div class="hero-actions">
+          <button class="btn-hero-primary" (click)="demanderSubvention()">Déposer une demande</button>
+          <a routerLink="/programmes" class="btn-hero-outline">Découvrir les aides</a>
+        </div>
+        <ul class="hero-badges">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            100% en ligne
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Suivi en temps réel
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Réponse rapide
+          </li>
+        </ul>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-visual-glow"></div>
+        <svg class="hero-illustration" viewBox="0 0 420 380" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="210" cy="345" rx="160" ry="18" fill="#0f3d13" opacity=".18"/>
+          <path d="M40 320c30-140 130-210 260-190 40 90-10 190-260 190Z" fill="#2E7D32"/>
+          <path d="M60 318c26-118 108-176 220-160" stroke="#1B5E20" stroke-width="6" stroke-linecap="round" fill="none" opacity=".5"/>
+          <g>
+            <rect x="150" y="150" width="120" height="86" rx="10" fill="#fff"/>
+            <rect x="160" y="162" width="100" height="54" rx="4" fill="#E8F5E9"/>
+            <path d="M170 200l20-18 16 12 22-24 22 20" stroke="#2E7D32" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="140" y="236" width="140" height="10" rx="5" fill="#c8e6c9"/>
+          </g>
+          <g transform="translate(90,150)">
+            <circle cx="40" cy="30" r="22" fill="#FFD9A0"/>
+            <path d="M18 30a22 22 0 0 1 44 0" fill="#1B5E20"/>
+            <rect x="14" y="52" width="52" height="70" rx="16" fill="#D4A72C"/>
+            <rect x="20" y="58" width="40" height="14" rx="7" fill="#fff" opacity=".35"/>
+            <rect x="4" y="98" width="20" height="46" rx="10" fill="#FFD9A0" transform="rotate(-18 14 121)"/>
+            <rect x="56" y="98" width="20" height="46" rx="10" fill="#FFD9A0" transform="rotate(18 66 121)"/>
+          </g>
+          <g transform="translate(272,60)">
+            <path d="M20 90V40" stroke="#1B5E20" stroke-width="6" stroke-linecap="round"/>
+            <path d="M20 40c-16 4-24-6-24-6s16-14 30-4c6-14 26-16 26-16s0 22-16 26c10 8 6 20 6 20-14 6-22-6-22-6" fill="#4CAF50"/>
+          </g>
+          <g transform="translate(50,60)">
+            <path d="M14 66V26" stroke="#1B5E20" stroke-width="5" stroke-linecap="round"/>
+            <path d="M14 26c-12 2-18-6-18-6s12-10 22-2c4-10 20-12 20-12s0 16-12 20c8 6 4 16 4 16-10 4-16-4-16-4" fill="#66BB6A"/>
+          </g>
+          <circle cx="358" cy="66" r="20" fill="#D4A72C" opacity=".85"/>
+          <path d="M348 66l6 6 12-12" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+    </div>
+
+    <svg class="hero-wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 40C240 90 480 0 720 24C960 48 1200 88 1440 40V90H0V40Z" fill="#F8FAF8"/>
+    </svg>
+  </section>
+
+ 
+
+  <!-- ===== COMMENT ÇA FONCTIONNE ===== -->
+  <section class="section-etapes">
+    <span class="section-eyebrow">Le parcours</span>
+    <h2>Comment ça fonctionne ?</h2>
+    <p class="section-subtitle">Quatre étapes claires, du compte à la décision finale.</p>
+
+    <div class="etapes-track">
+      <div class="etape-card">
+        <div class="etape-icon">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 21c1.5-4.5 5-6 8-6s6.5 1.5 8 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <span class="etape-tag">Étape 1</span>
+        <h3>Créer un compte</h3>
+        <p>Inscrivez-vous en quelques minutes avec vos informations personnelles et agricoles.</p>
+      </div>
+      <div class="etape-card">
+        <div class="etape-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5a1 1 0 0 1 1-1h9l6 6v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M14 4v6h6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="etape-tag">Étape 2</span>
+        <h3>Choisir une subvention</h3>
+        <p>Parcourez les programmes disponibles et sélectionnez celui qui correspond à votre projet.</p>
+      </div>
+      <div class="etape-card">
+        <div class="etape-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 9l5-5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <span class="etape-tag">Étape 3</span>
+        <h3>Déposer les documents</h3>
+        <p>Téléversez vos pièces justificatives directement en ligne, en toute sécurité.</p>
+      </div>
+      <div class="etape-card">
+        <div class="etape-icon">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 0 1-3.4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <span class="etape-tag">Étape 4</span>
+        <h3>Suivre le dossier</h3>
+        <p>Recevez des notifications à chaque étape jusqu'à la décision finale.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROGRAMMES DISPONIBLES ===== -->
+  <section class="section-programmes">
+    <span class="section-eyebrow">Les aides</span>
+    <h2>Programmes disponibles</h2>
+    <p class="section-subtitle">Une sélection d'aides adaptées à chaque type de projet agricole.</p>
+
+    <div class="programmes-grid">
+      @for (programme of programmes(); track programme.id) {
+        <div class="programme-card">
+          <div class="programme-icon">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 21c0-5.5 3.5-8 7-9-1 5.5-2.5 9-7 9Z" fill="currentColor"/><path d="M12 21c0-6.5-3.5-10-8-11 1 6.5 2.5 11 8 11Z" fill="currentColor" opacity=".5"/></svg>
+          </div>
+          <h3>{{ programme.nom_fr }}</h3>
+          <p>{{ programme.description_fr }}</p>
+          <div class="programme-divider"></div>
+          <div class="programme-footer">
+            @if (programme.montant_max) {
+              <div class="programme-montant">
+                <span class="montant-label">Jusqu'à</span>
+                <span class="montant-value">{{ programme.montant_max | number }} DH</span>
+              </div>
+            }
+            <span class="programme-taux">{{ programme.taux_subvention }}% subvention</span>
+          </div>
+          <a routerLink="/programmes" class="btn-programme">
+            Voir détails
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </div>
+      }
+    </div>
+    <div class="section-cta">
+      <a routerLink="/programmes" class="btn-outline">Voir tous les programmes</a>
+    </div>
+  </section>
+
+  <!-- ===== POURQUOI CETTE PLATEFORME ===== -->
+  <section class="section-pourquoi">
+    <div class="pourquoi-inner">
+      <div class="pourquoi-copy">
+        <span class="section-eyebrow section-eyebrow--light">Nos engagements</span>
+        <h2>Pourquoi utiliser notre plateforme ?</h2>
+        <p class="section-subtitle section-subtitle--light">
+          Conçue avec les services du ministère pour simplifier chaque étape de votre demande.
+        </p>
+        <ul class="pourquoi-list">
+          <li>
+            <span class="pourquoi-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5a1 1 0 0 1 1-1h9l6 6v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </span>
+            <div>
+              <h4>Dépôt 100% numérique</h4>
+              <p>Aucun déplacement nécessaire, tout se fait en ligne.</p>
+            </div>
+          </li>
+          <li>
+            <span class="pourquoi-icon">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </span>
+            <div>
+              <h4>Suivi en temps réel</h4>
+              <p>Consultez l'avancement de votre dossier à tout moment.</p>
+            </div>
+          </li>
+          <li>
+            <span class="pourquoi-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            </span>
+            <div>
+              <h4>Documents sécurisés</h4>
+              <p>Vos pièces justificatives sont stockées de façon chiffrée.</p>
+            </div>
+          </li>
+          <li>
+            <span class="pourquoi-icon">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 0 1-3.4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </span>
+            <div>
+              <h4>Notifications automatiques</h4>
+              <p>Un message à chaque changement de statut de votre dossier.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="pourquoi-timeline">
+        <div class="timeline-item">
+          <span class="timeline-dot"></span>
+          <span class="timeline-label">Créer un compte</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-dot"></span>
+          <span class="timeline-label">Choisir un programme</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-dot"></span>
+          <span class="timeline-label">Déposer le dossier</span>
+        </div>
+        <div class="timeline-item">
+          <span class="timeline-dot"></span>
+          <span class="timeline-label">Validation</span>
+        </div>
+        <div class="timeline-item timeline-item--final">
+          <span class="timeline-dot"></span>
+          <span class="timeline-label">Versement</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="section-faq">
+    <span class="section-eyebrow">Besoin d'aide</span>
+    <h2>Questions fréquentes</h2>
+    <div class="faq-list">
+      @for (item of faqItems; track item.question) {
+        <div class="faq-item" [class.open]="item.ouvert()">
+          <button class="faq-question" (click)="toggleFaq(item)">
+            <span>{{ item.question }}</span>
+            <svg class="faq-chevron" [class.rotated]="item.ouvert()" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          @if (item.ouvert()) {
+            <div class="faq-reponse">{{ item.reponse }}</div>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="section-cta-final">
+    <svg class="cta-wave" viewBox="0 0 1440 60" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 30C240 0 480 60 720 30C960 0 1200 60 1440 30V0H0V30Z" fill="#1B5E20"/>
+    </svg>
+    <div class="cta-content">
+      <h2>Prêt à déposer votre dossier ?</h2>
+      <p>Commencez dès aujourd'hui, ça prend moins de dix minutes.</p>
+      <a routerLink="/register" class="btn-cta">
+        Créer un compte
+        <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-col footer-col--brand">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 21c0-6 4-9 8-10-1 6-3 10-8 10Z" fill="currentColor"/><path d="M12 21c0-7-4-11-9-12 1 7 3 12 9 12Z" fill="currentColor" opacity=".55"/></svg>
+          </span>
+          <span class="brand-text">Subventions Agricoles</span>
+        </div>
+        <p>Ministère de l'Agriculture, de la Pêche Maritime, du Développement Rural et des Eaux et Forêts.</p>
+        <div class="social-links">
+          <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none"><path d="M15 8h2V5h-2a4 4 0 0 0-4 4v2H9v3h2v7h3v-7h2.5l.5-3H14V9a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></a>
+          <a href="#" aria-label="X"><svg viewBox="0 0 24 24" fill="none"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
+          <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="9" r="1" fill="currentColor"/><path d="M8.5 12v5M12 12v5M12 14c0-1.5 1-2 2-2s2 .8 2 2v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6.5" width="18" height="11" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M11 10l4 2-4 2v-4Z" fill="currentColor"/></svg></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>À propos</h4>
+        <a routerLink="/">Le ministère</a>
+        <a routerLink="/guide">Notre mission</a>
+        <a routerLink="/contact">Nous contacter</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Liens rapides</h4>
+        <a routerLink="/programmes">Programmes de subvention</a>
+        <a routerLink="/guide">Guide</a>
+        <a routerLink="/faq">FAQ</a>
+        <a routerLink="/login">Espace agriculteur</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <p>
+          <svg class="contact-icon" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg>
+          Avenue Haj Ahmed Cherkaoui, Rabat, Maroc
+        </p>
+        <p>
+          <svg class="contact-icon" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          contact&#64;agriculture.gov.ma
+        </p>
+        <p>
+          <svg class="contact-icon" viewBox="0 0 24 24" fill="none"><path d="M6 3h3l1.5 4.5-2 1.5a12 12 0 0 0 6 6l1.5-2L20 15v3a2 2 0 0 1-2 2C10.5 20 4 13.5 4 6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          +212 5 37 XX XX XX
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Horaires</h4>
+        <p>Lundi – Vendredi : 8h30 – 16h30</p>
+        <p>Support en ligne : 24h/24</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Ministère de l'Agriculture — Tous droits réservés</p>
+      <a href="#">Mentions légales</a>
+    </div>
+  </footer>
+</div>

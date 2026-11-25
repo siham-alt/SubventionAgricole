@@ -1,0 +1,89 @@
+<div class="page">
+  <h1>💬 Messages de contact</h1>
+  <p class="subtitle">
+    {{ isAdmin ? 'Tous les messages reçus, assignés ou en attente d\'assignation' : 'Messages qui vous ont été assignés' }}
+  </p>
+
+  <div class="filter-chips">
+    <button class="chip" [class.active]="filtreStatut() === 'tous'" (click)="filtreStatut.set('tous')">Tous</button>
+    <button class="chip" [class.active]="filtreStatut() === 'nouveau'" (click)="filtreStatut.set('nouveau')">Non traités</button>
+    <button class="chip" [class.active]="filtreStatut() === 'traite'" (click)="filtreStatut.set('traite')">Traités</button>
+  </div>
+
+  <div class="card">
+    @if (loading()) {
+      <p class="loading-text">Chargement...</p>
+    } @else if (messagesFiltres.length === 0) {
+      <p class="empty-text">Aucun message.</p>
+    } @else {
+      <div class="messages-list">
+        @for (msg of messagesFiltres; track msg.id) {
+          <div class="message-row" [class.non-traite]="msg.statut !== 'traite'" (click)="ouvrirMessage(msg)">
+            <div class="message-main">
+              <div class="message-top">
+                <span class="message-nom">{{ msg.nom }}</span>
+                @if (msg.numero_dossier) {
+                  <span class="dossier-tag">📁 {{ msg.numero_dossier }}</span>
+                }
+                <span class="statut-tag" [class]="msg.statut">
+                  {{ msg.statut === 'traite' ? '✓ Traité' : 'Non traité' }}
+                </span>
+              </div>
+              <div class="message-sujet">{{ msg.sujet || 'Sans sujet' }}</div>
+              <div class="message-apercu">{{ msg.message }}</div>
+              <div class="message-meta">
+                {{ msg.email }} — {{ msg.created_at | date: 'dd/MM/yyyy HH:mm' }}
+                @if (msg.assigneA) { — Assigné à {{ msg.assigneA.name }} }
+              </div>
+            </div>
+
+            @if (isAdmin) {
+              <select
+                class="reassign-select"
+                (click)="$event.stopPropagation()"
+                (change)="reassigner(msg, $any($event.target).value)"
+              >
+                <option value="">Non assigné</option>
+                @for (a of agents(); track a.id) {
+                  <option [value]="a.id" [selected]="msg.assigne_a_id === a.id">{{ a.name }}</option>
+                }
+              </select>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  @if (messageOuvert(); as msg) {
+    <div class="modal-overlay" (click)="fermerMessage()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h3>{{ msg.sujet || 'Message de ' + msg.nom }}</h3>
+        <div class="modal-meta">
+          De : {{ msg.nom }} ({{ msg.email }})
+          @if (msg.numero_dossier) { — Dossier {{ msg.numero_dossier }} }
+        </div>
+        <div class="modal-message">{{ msg.message }}</div>
+
+        @if (msg.dossier_id) {
+          <a [routerLink]="['/agent/dossiers', msg.dossier_id]" class="lien-dossier">Voir le dossier concerné →</a>
+        }
+
+        <label class="reponse-label">Votre réponse</label>
+        <textarea
+          rows="5"
+          placeholder="Rédigez votre réponse..."
+          [value]="texteReponse()"
+          (input)="texteReponse.set($any($event.target).value)"
+        ></textarea>
+
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="fermerMessage()">Fermer</button>
+          <button class="btn-primary" [disabled]="envoiEnCours() || !texteReponse().trim()" (click)="envoyerReponse()">
+            {{ envoiEnCours() ? 'Envoi...' : 'Envoyer la réponse' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

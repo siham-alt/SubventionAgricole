@@ -1,0 +1,86 @@
+<div class="auth-page">
+  <!-- ===== COLONNE GAUCHE — VISUEL ===== -->
+  <div class="auth-visual">
+    <div class="auth-visual-overlay"></div>
+    <div class="auth-visual-content">
+      <a routerLink="/" class="brand">
+        <span class="brand-icon">🌾</span>
+        <span class="brand-text">Subventions Agricoles</span>
+      </a>
+      <div class="auth-visual-text">
+        <h2>Cultivons l'avenir ensemble</h2>
+        <p>Accédez à votre espace pour déposer, suivre et gérer vos demandes de subvention agricole en toute simplicité.</p>
+      </div>
+      <div class="auth-visual-badges">
+        <div class="badge">
+          <span class="badge-icon">✓</span>
+          <span>Dépôt de dossier 100% en ligne</span>
+        </div>
+        <div class="badge">
+          <span class="badge-icon">✓</span>
+          <span>Suivi en temps réel</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== COLONNE DROITE — FORMULAIRE ===== -->
+  <div class="auth-form-side">
+    <div class="auth-form-wrapper">
+      <a routerLink="/" class="back-home">← Retour à l'accueil</a>
+
+      <div class="auth-form-header">
+        <h1>Connexion</h1>
+        <p>Accédez à votre espace personnel</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
+        @if (errorMessage()) {
+          <div class="alert alert-danger">{{ errorMessage() }}</div>
+        }
+
+        <div class="form-group">
+          <label for="email">Adresse e-mail</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="exemple@email.com"
+            [class.invalid]="form.get('email')?.invalid && form.get('email')?.touched"
+          />
+          @if (form.get('email')?.invalid && form.get('email')?.touched) {
+            <span class="error-text">Veuillez saisir un email valide</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            placeholder="••••••••"
+            [class.invalid]="form.get('password')?.invalid && form.get('password')?.touched"
+          />
+          @if (form.get('password')?.invalid && form.get('password')?.touched) {
+            <span class="error-text">Le mot de passe est requis</span>
+          }
+        </div>
+
+        <button type="submit" class="btn-submit" [disabled]="loading()">
+          @if (loading()) {
+            <span class="spinner"></span>
+            <span>Connexion en cours...</span>
+          } @else {
+            <span>Se connecter</span>
+          }
+        </button>
+
+        <p class="auth-footer">
+          Vous n'avez pas de compte ?
+          <a routerLink="/register">Créer un compte</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,87 @@
+<header class="header">
+  <div class="header-inner">
+    <a routerLink="/" class="brand">
+      <span class="brand-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 21c0-6 4-9 8-10-1 6-3 10-8 10Z" fill="currentColor"/><path d="M12 21c0-7-4-11-9-12 1 7 3 12 9 12Z" fill="currentColor" opacity=".55"/></svg>
+      </span>
+      <span class="brand-text">Subventions Agricoles</span>
+    </a>
+
+    <nav class="main-menu">
+      <a routerLink="/">Accueil</a>
+      <a routerLink="/programmes">Programmes de subvention</a>
+      <a routerLink="/guide">Guide</a>
+      <a routerLink="/faq">FAQ</a>
+      <a routerLink="/contact">Contact</a>
+    </nav>
+
+    <div class="header-actions">
+      @if (auth.isAuthenticated()) {
+        <div class="user-menu" [class.open]="menuUtilisateurOuvert()">
+          <button class="avatar-trigger" (click)="toggleMenuUtilisateur()">
+            @if (auth.photoUrl(); as photo) {
+              <img [src]="photo" class="avatar avatar-img" alt="Photo de profil" />
+            } @else {
+              <span class="avatar">{{ initiales() }}</span>
+            }
+            <svg class="chevron-down" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          @if (menuUtilisateurOuvert()) {
+            <div class="user-dropdown">
+              <div class="user-dropdown-header">
+                @if (auth.photoUrl(); as photo) {
+                  <img [src]="photo" class="avatar avatar-lg avatar-img" alt="Photo de profil" />
+                } @else {
+                  <span class="avatar avatar-lg">{{ initiales() }}</span>
+                }
+                <div class="user-dropdown-info">
+                  <strong>{{ auth.currentUser()?.name }}</strong>
+                  <span class="user-email">{{ auth.currentUser()?.email }}</span>
+                </div>
+              </div>
+              <div class="user-dropdown-divider"></div>
+              <button class="user-dropdown-item" (click)="allerVersEspace(); toggleMenuUtilisateur()">
+                <svg class="item-icon" viewBox="0 0 24 24" fill="none"><path d="M3 11l9-7 9 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Mon espace
+              </button>
+              <button class="user-dropdown-item danger" (click)="deconnexion()">
+                <svg class="item-icon" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17l5-5-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Déconnexion
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <a routerLink="/login" class="btn-outline">Connexion</a>
+        <a routerLink="/register" class="btn-fill">Créer un compte</a>
+      }
+    </div>
+
+    <button class="burger" (click)="toggleMenuMobile()" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+
+  <!-- ===== PANNEAU MOBILE ===== -->
+  @if (menuMobileOuvert()) {
+    <div class="mobile-panel">
+      <nav class="mobile-menu">
+        <a routerLink="/" (click)="toggleMenuMobile()">Accueil</a>
+        <a routerLink="/programmes" (click)="toggleMenuMobile()">Programmes de subvention</a>
+        <a routerLink="/guide" (click)="toggleMenuMobile()">Guide</a>
+        <a routerLink="/faq" (click)="toggleMenuMobile()">FAQ</a>
+        <a routerLink="/contact" (click)="toggleMenuMobile()">Contact</a>
+      </nav>
+      <div class="mobile-actions">
+        @if (auth.isAuthenticated()) {
+          <button class="btn-fill" (click)="allerVersEspace(); toggleMenuMobile()">Mon espace</button>
+          <button class="btn-outline" (click)="deconnexion(); toggleMenuMobile()">Déconnexion</button>
+        } @else {
+          <a routerLink="/login" class="btn-outline" (click)="toggleMenuMobile()">Connexion</a>
+          <a routerLink="/register" class="btn-fill" (click)="toggleMenuMobile()">Créer un compte</a>
+        }
+      </div>
+    </div>
+  }
+</header>

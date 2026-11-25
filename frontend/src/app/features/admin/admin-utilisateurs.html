@@ -1,0 +1,164 @@
+<div class="page">
+  <div class="header-row">
+    <div>
+      <h1>Gestion des utilisateurs</h1>
+      <p class="subtitle">Gérez les comptes agriculteurs, agents et responsables de la plateforme</p>
+    </div>
+    <button class="btn-primary" (click)="ouvrirCreation()">+ Nouvel utilisateur</button>
+  </div>
+
+  @if (stats(); as s) {
+    <div class="stats-row">
+      <div class="stat-mini"><span class="stat-mini-value">{{ s.total }}</span><span class="stat-mini-label">Total</span></div>
+      <div class="stat-mini"><span class="stat-mini-value">{{ s.agriculteurs }}</span><span class="stat-mini-label">Agriculteurs</span></div>
+      <div class="stat-mini"><span class="stat-mini-value">{{ s.agents }}</span><span class="stat-mini-label">Agents</span></div>
+      <div class="stat-mini success"><span class="stat-mini-value">{{ s.actifs }}</span><span class="stat-mini-label">Actifs</span></div>
+      <div class="stat-mini danger"><span class="stat-mini-value">{{ s.inactifs }}</span><span class="stat-mini-label">Inactifs</span></div>
+    </div>
+  }
+
+  <div class="filters-row">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="🔍 Rechercher par nom ou email..."
+      [value]="recherche()"
+      (input)="recherche.set($any($event.target).value)"
+    />
+    <div class="filter-chips">
+      <button class="filter-chip" [class.active]="filtreRole() === 'tous'" (click)="changerFiltre('tous')">Tous</button>
+      <button class="filter-chip" [class.active]="filtreRole() === 'agriculteur'" (click)="changerFiltre('agriculteur')">Agriculteurs</button>
+      <button class="filter-chip" [class.active]="filtreRole() === 'agent'" (click)="changerFiltre('agent')">Agents</button>
+    </div>
+  </div>
+
+  <div class="card">
+    @if (loading()) {
+      <p class="loading-text">Chargement...</p>
+    } @else if (utilisateursFiltres().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">👥</div>
+        <p>Aucun utilisateur trouvé.</p>
+      </div>
+    } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Utilisateur</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Téléphone</th>
+            <th>État</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of utilisateursFiltres(); track u.id) {
+            <tr>
+              <td>
+                <div class="user-cell" (click)="voirDetail(u)">
+                  <span class="avatar">{{ u.name.charAt(0) }}</span>
+                  <span class="user-name-link">{{ u.name }}</span>
+                </div>
+              </td>
+              <td>{{ u.email }}</td>
+              <td><span class="role-chip" [class]="u.roles[0]?.name">{{ u.roles[0]?.name }}</span></td>
+              <td>{{ u.telephone || '—' }}</td>
+              <td>
+                <span class="etat-chip" [class.actif]="u.actif" [class.inactif]="!u.actif">
+                  {{ u.actif ? '● Actif' : '● Inactif' }}
+                </span>
+              </td>
+              <td class="actions">
+                <button class="btn-mini" (click)="ouvrirEdition(u)">Modifier</button>
+                <button class="btn-mini" (click)="toggleActif(u)">{{ u.actif ? 'Désactiver' : 'Activer' }}</button>
+                <button class="btn-mini btn-danger" (click)="supprimer(u)">Supprimer</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+
+  <!-- Modal Création/Édition -->
+  @if (modalOuvert()) {
+    <div class="modal-overlay" (click)="fermerModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h2>{{ modeEdition() ? 'Modifier l\'utilisateur' : 'Nouvel utilisateur' }}</h2>
+
+        @if (errorMessage()) { <div class="alert-danger">{{ errorMessage() }}</div> }
+
+        <form [formGroup]="form" class="form-stack">
+          <div class="form-group">
+            <label>Nom complet</label>
+            <input type="text" formControlName="name" />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" formControlName="email" />
+          </div>
+          <div class="form-group">
+            <label>Téléphone</label>
+            <input type="text" formControlName="telephone" />
+          </div>
+          <div class="form-group">
+            <label>{{ modeEdition() ? 'Nouveau mot de passe (laisser vide pour ne pas changer)' : 'Mot de passe' }}</label>
+            <input type="password" formControlName="password" />
+          </div>
+          <div class="form-group">
+            <label>Rôle</label>
+   <select formControlName="role">
+  <option value="agriculteur">Agriculteur</option>
+  <option value="agent">Agent</option>
+  <option value="administrateur">Administrateur</option>
+</select>
+          </div>
+        </form>
+
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="fermerModal()">Annuler</button>
+          <button class="btn-primary" (click)="enregistrer()">{{ modeEdition() ? 'Enregistrer' : 'Créer' }}</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal Détail -->
+  @if (detailOuvert() && utilisateurDetail(); as detail) {
+    <div class="modal-overlay" (click)="fermerDetail()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="detail-header">
+          <span class="avatar-large">{{ detail.name.charAt(0) }}</span>
+          <div>
+            <h2>{{ detail.name }}</h2>
+            <p class="detail-email">{{ detail.email }}</p>
+          </div>
+        </div>
+
+        <div class="detail-info-grid">
+          <div><span class="info-label">Rôle</span><span class="info-value">{{ detail.roles?.[0]?.name }}</span></div>
+          <div><span class="info-label">Téléphone</span><span class="info-value">{{ detail.telephone || '—' }}</span></div>
+          <div><span class="info-label">Région</span><span class="info-value">{{ detail.region || '—' }}</span></div>
+          <div><span class="info-label">Inscrit le</span><span class="info-value">{{ detail.created_at | date: 'dd/MM/yyyy' }}</span></div>
+        </div>
+
+        @if (detail.dossiers?.length) {
+          <h3>Dossiers ({{ detail.dossiers.length }})</h3>
+          <div class="mini-dossiers-list">
+            @for (d of detail.dossiers; track d.id) {
+              <div class="mini-dossier-row">
+                <span>{{ d.numero_dossier }}</span>
+                <span class="statut-mini">{{ d.statut }}</span>
+              </div>
+            }
+          </div>
+        }
+
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="fermerDetail()">Fermer</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

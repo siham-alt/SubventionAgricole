@@ -1,0 +1,67 @@
+<div class="page">
+  <h1>Paramètres</h1>
+  <p class="subtitle">Gérez la sécurité et vos préférences de compte</p>
+
+  <!-- ===== SÉCURITÉ ===== -->
+  <div class="card">
+    <h2>Sécurité</h2>
+    <p class="card-desc">Changez votre mot de passe régulièrement pour protéger votre compte.</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-stack">
+      @if (successMessage()) {
+        <div class="alert alert-success">{{ successMessage() }}</div>
+      }
+      @if (errorMessage()) {
+        <div class="alert alert-danger">{{ errorMessage() }}</div>
+      }
+
+      <div class="form-group">
+        <label>Mot de passe actuel</label>
+        <input type="password" formControlName="mot_de_passe_actuel" placeholder="••••••••" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nouveau mot de passe</label>
+          <input type="password" formControlName="nouveau_mot_de_passe" placeholder="••••••••" />
+        </div>
+        <div class="form-group">
+          <label>Confirmer le nouveau mot de passe</label>
+          <input type="password" formControlName="nouveau_mot_de_passe_confirmation" placeholder="••••••••" />
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary" [disabled]="loading()">
+        @if (loading()) {
+          <span class="spinner"></span> Enregistrement...
+        } @else {
+          Mettre à jour le mot de passe
+        }
+      </button>
+    </form>
+  </div>
+
+  <div class="card">
+  <h2>Notifications par email</h2>
+  <p class="card-desc">Choisissez quand vous souhaitez recevoir un email.</p>
+
+  <div class="niveau-options">
+    <button
+      class="niveau-btn"
+      [class.active]="notifEmailNiveau() === 'important'"
+      (click)="changerNiveauNotif('important')"
+    >
+      <strong>Décisions importantes uniquement</strong>
+      <span>Soumission, complément demandé, décision finale (recommandé)</span>
+    </button>
+    <button
+      class="niveau-btn"
+      [class.active]="notifEmailNiveau() === 'tout'"
+      (click)="changerNiveauNotif('tout')"
+    >
+      <strong>Toutes les mises à jour</strong>
+      <span>Inclut aussi les étapes intermédiaires de traitement</span>
+    </button>
+  </div>
+</div>
+  

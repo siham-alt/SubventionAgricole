@@ -1,0 +1,104 @@
+<app-navbar />
+
+<div class="contact-page">
+
+  <section class="hero">
+    <span class="hero-eyebrow">Contact</span>
+    <h1>Parlez à quelqu'un du terrain</h1>
+    <p class="hero-lede">
+      Un agent des services du ministère répond à vos questions sur un dossier,
+      un document ou un programme de subvention.
+    </p>
+  </section>
+
+  <div class="contact-layout">
+
+    <!-- ===== FORMULAIRE ===== -->
+    <form class="formulaire" (ngSubmit)="soumettre()" novalidate>
+      <h2>Écrire aux services</h2>
+
+      <div class="champ">
+        <label for="nom">Nom complet</label>
+        <input id="nom" name="nom" type="text" [(ngModel)]="formulaire.nom" required />
+      </div>
+
+      <div class="champ">
+        <label for="email">Adresse e-mail</label>
+        <input id="email" name="email" type="email" [(ngModel)]="formulaire.email" required />
+      </div>
+
+      <div class="champ">
+        <label for="dossier">Numéro de dossier <span class="optionnel">(si applicable)</span></label>
+        <input id="dossier" name="dossier" type="text" placeholder="ex. DOS-2026-00123" [(ngModel)]="formulaire.numeroDossier" />
+      </div>
+
+      <div class="champ">
+        <label for="sujet">Sujet</label>
+        <select id="sujet" name="sujet" [(ngModel)]="formulaire.sujet">
+          <option value="" disabled selected>Choisir un sujet</option>
+          @for (s of sujets; track s) {
+            <option [value]="s">{{ s }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="champ">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="5" [(ngModel)]="formulaire.message" required></textarea>
+      </div>
+
+      <button type="submit" class="btn-envoyer" [disabled]="envoi() === 'envoi'">
+        {{ envoi() === 'envoi' ? 'Envoi en cours…' : 'Envoyer le message' }}
+      </button>
+
+      @if (envoi() === 'succes') {
+        <p class="statut-message succes">Votre message a été transmis. Une réponse vous parviendra sous quelques jours ouvrés.</p>
+      }
+    @if (envoi() === 'erreur') {
+  <p class="statut-message erreur">{{ messageErreur() }}</p>
+}
+    </form>
+
+    <!-- ===== COORDONNEES ===== -->
+    <aside class="coordonnees">
+      <h2>Coordonnées</h2>
+
+      <div class="bloc-coord">
+        <span class="bloc-icone">☎️</span>
+        <div>
+          <div class="bloc-label">Numéro vert</div>
+          <div class="bloc-valeur">08 01 00 20 20</div>
+          <div class="bloc-note">Du lundi au vendredi, 8h30 – 16h30</div>
+        </div>
+      </div>
+
+      <div class="bloc-coord">
+        <span class="bloc-icone">✉️</span>
+        <div>
+          <div class="bloc-label">E-mail</div>
+          <div class="bloc-valeur">subventions&#64;agriculture.gov.ma</div>
+        </div>
+      </div>
+
+      <div class="bloc-coord">
+        <span class="bloc-icone">🏛️</span>
+        <div>
+          <div class="bloc-label">Adresse</div>
+          <div class="bloc-valeur">Ministère de l'Agriculture, Rabat</div>
+        </div>
+      </div>
+
+      <h3>Directions provinciales</h3>
+      <ul class="dpa-list">
+        @for (d of directions; track d.ville) {
+          <li class="dpa-item">
+            <span class="dpa-ville">{{ d.ville }}</span>
+            <span class="dpa-region">{{ d.region }}</span>
+            <span class="dpa-tel">{{ d.telephone }}</span>
+          </li>
+        }
+      </ul>
+    </aside>
+  </div>
+
+</div>

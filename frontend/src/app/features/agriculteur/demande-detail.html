@@ -1,0 +1,276 @@
+<div class="page">
+  @if (loading()) {
+    <p class="loading-text">Chargement...</p>
+  } @else if (dossier(); as d) {
+
+    <div class="header-row">
+      <div>
+        <h1>{{ d.numero_dossier }}</h1>
+        <p class="subtitle">{{ d.type_subvention?.nom_fr }}</p>
+      </div>
+      <span class="statut-badge-lg" [style.background]="statutsCouleurs[d.statut]">
+        {{ statutsLabels[d.statut] }}
+      </span>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="alert-erreur-globale">{{ errorMessage() }}</div>
+    }
+
+    <!-- ===== BANDEAU — action requise ===== -->
+    @if (aBesoinAction()) {
+      <div class="alert-action">
+        <span class="alert-icon">⚠️</span>
+        <div>
+          <strong>Une action de votre part est nécessaire</strong>
+          <p>
+            {{ documentsARefaire().length }} document{{ documentsARefaire().length > 1 ? 's' : '' }}
+            {{ documentsARefaire().length > 1 ? 'ont été refusés' : 'a été refusé' }} et doi{{ documentsARefaire().length > 1 ? 'vent' : 't' }} être renvoyé{{ documentsARefaire().length > 1 ? 's' : '' }}.
+          </p>
+        </div>
+      </div>
+    } @else if (enAttenteAgent()) {
+      <div class="alert-info">
+        <span class="alert-icon">⏳</span>
+        <div>
+          <strong>Document(s) renvoyé(s), en attente de vérification</strong>
+          <p>L'agent va examiner votre dossier sous peu.</p>
+        </div>
+      </div>
+    }
+
+    <!-- ===== INFORMATIONS DU DOSSIER ===== -->
+    <div class="card info-card">
+      <h2>Informations du dossier</h2>
+
+      <div class="info-grid">
+        <div class="info-block">
+          <h3>🌾 Exploitation</h3>
+          <p>{{ d.exploitation?.nom_exploitation || '—' }}</p>
+          @if (d.exploitation) {
+            <p class="text-muted">
+              {{ d.exploitation.superficie_hectares }} ha —
+              {{ d.exploitation.commune }}, {{ d.exploitation.province }}
+            </p>
+          }
+        </div>
+
+        <div class="info-block">
+          <h3>🪪 Identité juridique</h3>
+          <p>{{ getStatutJuridique(d) }}</p>
+          @if (d.nom_representant_legal) {
+            <p class="text-muted">Représentant : {{ d.nom_representant_legal }}</p>
+          }
+          @if (d.numero_immatriculation) {
+            <p class="text-muted">N° immat. : {{ d.numero_immatriculation }}</p>
+          }
+        </div>
+
+        <div class="info-block">
+          <h3>📜 Statut foncier</h3>
+          <p>{{ getModeTenure(d) }}</p>
+          @if (d.numero_titre_foncier) {
+            <p class="text-muted">TF : {{ d.numero_titre_foncier }}</p>
+          }
+        </div>
+
+        @if (d.type_equipement || d.nombre_unites) {
+          <div class="info-block">
+            <h3>🔧 Détails techniques</h3>
+            @if (d.type_equipement) { <p>{{ d.type_equipement }}</p> }
+            @if (d.nombre_unites) { <p class="text-muted">{{ d.nombre_unites }} unité(s)</p> }
+          </div>
+        }
+
+        <div class="info-block">
+          <h3>💰 Financement</h3>
+          <p class="montant-highlight">{{ d.montant_demande | number }} DH demandés</p>
+          @if (d.cout_total_projet) {
+            <p class="text-muted">Coût total : {{ d.cout_total_projet | number }} DH</p>
+          }
+          @if (d.apport_personnel) {
+            <p class="text-muted">Apport personnel : {{ d.apport_personnel | number }} DH</p>
+          }
+          @if (d.montant_accorde) {
+            <p class="montant-accorde">✓ {{ d.montant_accorde | number }} DH accordés</p>
+          }
+        </div>
+
+        @if (d.nom_banque || d.rib) {
+          <div class="info-block">
+            <h3>🏦 Coordonnées bancaires</h3>
+            @if (d.nom_banque) {
+              <p>{{ d.nom_banque }}@if (d.agence_bancaire) { — {{ d.agence_bancaire }} }</p>
+            }
+            @if (d.rib) { <p class="text-muted">RIB : {{ d.rib }}</p> }
+          </div>
+        }
+
+        @if (d.date_debut_prevue || d.date_fin_prevue) {
+          <div class="info-block">
+            <h3>📅 Calendrier prévisionnel</h3>
+            <p>
+              @if (d.date_debut_prevue) { {{ d.date_debut_prevue | date: 'dd/MM/yyyy' }} }
+              @if (d.date_debut_prevue && d.date_fin_prevue) { → }
+              @if (d.date_fin_prevue) { {{ d.date_fin_prevue | date: 'dd/MM/yyyy' }} }
+            </p>
+          </div>
+        }
+
+        @if (d.a_deja_beneficie) {
+          <div class="info-block">
+            <h3>📋 Antécédents</h3>
+            <p>A déjà bénéficié d'une subvention</p>
+            @if (d.reference_subvention_precedente) {
+              <p class="text-muted">Réf. : {{ d.reference_subvention_precedente }}</p>
+            }
+          </div>
+        }
+
+        @if (d.telephone_contact_projet || d.email_contact_projet) {
+          <div class="info-block">
+            <h3>📞 Contact projet</h3>
+            @if (d.telephone_contact_projet) { <p>{{ d.telephone_contact_projet }}</p> }
+            @if (d.email_contact_projet) { <p class="text-muted">{{ d.email_contact_projet }}</p> }
+          </div>
+        }
+      </div>
+
+      @if (d.description_projet) {
+        <div class="info-description">
+          <h3>Description du projet</h3>
+          <p>{{ d.description_projet }}</p>
+        </div>
+      }
+
+      @if (d.statut === 'refuse' && d.motif_refus) {
+        <div class="alert-refus">
+          <strong>Motif du refus :</strong> {{ d.motif_refus }}
+        </div>
+      }
+    </div>
+
+    <div class="detail-grid">
+      <!-- ===== DOCUMENTS ===== -->
+      <div class="card">
+        <h2>Documents</h2>
+        <div class="documents-list">
+          @for (doc of d.documents; track doc.id) {
+            <div class="document-row" [class.refuse]="doc.statut_verification === 'refuse'">
+              <div class="document-info">
+                <div class="document-nom">
+                  {{ getLabelDocument(doc.type_document) }}
+                  <span class="document-version">v{{ doc.version }}</span>
+                </div>
+                <div class="document-fichier">{{ doc.nom_original }}</div>
+
+                @if (doc.statut_verification === 'refuse' && doc.commentaire_agent) {
+                  <div class="document-commentaire">
+                    <span class="commentaire-icon">💬</span>
+                    <div>
+                      <strong>Motif du refus :</strong> {{ doc.commentaire_agent }}
+                      @if (doc.verifie_par) {
+                        <span class="commentaire-auteur">— {{ doc.verifie_par.name }}</span>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <div class="document-actions">
+                <span class="doc-statut" [class]="doc.statut_verification">
+                  @switch (doc.statut_verification) {
+                    @case ('valide') { ✓ Validé }
+                    @case ('refuse') { ✗ Refusé }
+                    @default { ⏳ En attente }
+                  }
+                </span>
+
+                @if (doc.statut_verification === 'refuse') {
+                  <label class="btn-reupload">
+                    @if (uploadEnCours() === doc.id) {
+                      <span class="spinner-mini"></span> Envoi...
+                    } @else {
+                      📤 Renvoyer
+                    }
+                    <input
+                      type="file"
+                      hidden
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      [disabled]="uploadEnCours() === doc.id"
+                      (change)="onFichierChoisi($event, doc.id)"
+                    />
+                  </label>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- ===== HISTORIQUE DU DOSSIER ===== -->
+      <div class="card">
+        <h2>Historique du dossier</h2>
+
+        @if (historique().length === 0) {
+          <p class="empty-text">Aucun événement pour le moment.</p>
+        } @else {
+          <div class="historique-feed">
+            @for (item of historique(); track item.id) {
+              <div class="historique-item">
+                <span class="historique-icon">{{ getIconAction(item.action) }}</span>
+                <div class="historique-content">
+                  <div class="historique-titre">{{ formatAction(item.action) }}</div>
+                  @if (item.commentaire) {
+                    <div class="historique-commentaire">{{ item.commentaire }}</div>
+                  }
+                  <div class="historique-meta">
+                    {{ item.created_at | date: 'dd/MM/yyyy à HH:mm' }}
+                    @if (item.user) { · {{ item.user.name }} }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- ===== MESSAGERIE AVEC L'AGENT ===== -->
+    <div class="card" [class.card-highlight]="d.statut === 'complement_demande'">
+      <h2>💬 Répondre à l'agent</h2>
+
+      @if (d.statut === 'complement_demande') {
+        <p class="messagerie-hint">
+          Si le complément demandé ne concerne pas un document (précision, explication...),
+          répondez directement ici.
+        </p>
+      }
+
+      <div class="messages-list">
+        @for (msg of messages(); track msg.id) {
+          <div class="message-bubble" [class.mine]="msg.expediteur_id === d.user?.id">
+            <div class="message-auteur">{{ msg.expediteur?.name }}</div>
+            <div class="message-contenu">{{ msg.contenu }}</div>
+            <div class="message-date">{{ msg.created_at | date: 'dd/MM HH:mm' }}</div>
+          </div>
+        } @empty {
+          <p class="empty-text">Aucun message pour l'instant.</p>
+        }
+      </div>
+
+      <div class="message-input-row">
+        <textarea
+          rows="2"
+          placeholder="Écrire une réponse à l'agent..."
+          [value]="nouveauMessage()"
+          (input)="nouveauMessage.set($any($event.target).value)"
+        ></textarea>
+        <button class="btn-envoyer" [disabled]="envoiMessageEnCours() || !nouveauMessage().trim()" (click)="envoyerMessage()">
+          Envoyer
+        </button>
+      </div>
+    </div>
+
+  }
+</div>

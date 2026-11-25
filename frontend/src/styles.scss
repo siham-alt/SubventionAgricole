@@ -1,0 +1,19 @@
+@use 'styles/custom-theme';
+@use 'styles/variables' as *;
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: 'Roboto', 'Segoe UI', sans-serif;
+  margin: 0;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #fff;
+  &:hover { background-color: var(--color-primary-dark); }
+}
+
+.accent {
+  color: var(--color-accent);
+}

@@ -1,0 +1,103 @@
+<div class="page">
+  <h1>Paramètres</h1>
+  <p class="subtitle">Configurez la plateforme et gérez la sécurité de votre compte</p>
+
+  <!-- ===== PARAMÈTRES PLATEFORME ===== -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🌐</div>
+      <div>
+        <h2>Paramètres de la plateforme</h2>
+        <p class="card-desc">Informations affichées publiquement et règles générales</p>
+      </div>
+    </div>
+
+    @if (successParams()) {
+      <div class="alert alert-success">
+        <span>✓</span> {{ successParams() }}
+      </div>
+    }
+
+    <form [formGroup]="formParametres" class="form-stack">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email de contact affiché sur le site</label>
+          <input type="email" formControlName="email_contact" placeholder="contact@agriculture.gov.ma" />
+        </div>
+        <div class="form-group">
+          <label>Téléphone de contact</label>
+          <input type="text" formControlName="telephone_contact" placeholder="+212 5 37 XX XX XX" />
+        </div>
+      </div>
+
+      <div class="form-group form-group-inline">
+        <label>Délai légal de traitement</label>
+        <div class="input-suffix">
+          <input type="number" formControlName="delai_legal_traitement_jours" />
+          <span>jours</span>
+        </div>
+      </div>
+
+      <label class="switch-row">
+        <div>
+          <div class="switch-titre">Inscriptions ouvertes</div>
+          <div class="switch-desc">Autoriser les nouveaux agriculteurs à créer un compte</div>
+        </div>
+        <input type="checkbox" formControlName="inscriptions_ouvertes" class="switch-input" />
+        <span class="switch-visual"></span>
+      </label>
+
+      <button type="button" class="btn-primary" (click)="enregistrerParametres()" [disabled]="loadingParams()">
+        @if (loadingParams()) {
+          <span class="spinner"></span> Enregistrement...
+        } @else {
+          Enregistrer les modifications
+        }
+      </button>
+    </form>
+  </div>
+
+  <!-- ===== SÉCURITÉ ===== -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon card-icon-alt">🔒</div>
+      <div>
+        <h2>Sécurité du compte</h2>
+        <p class="card-desc">Modifiez votre mot de passe administrateur</p>
+      </div>
+    </div>
+
+    @if (successPassword()) {
+      <div class="alert alert-success"><span>✓</span> {{ successPassword() }}</div>
+    }
+    @if (errorPassword()) {
+      <div class="alert alert-danger"><span>⚠</span> {{ errorPassword() }}</div>
+    }
+
+    <form [formGroup]="formPassword" class="form-stack">
+      <div class="form-group">
+        <label>Mot de passe actuel</label>
+        <input type="password" formControlName="mot_de_passe_actuel" placeholder="••••••••" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nouveau mot de passe</label>
+          <input type="password" formControlName="nouveau_mot_de_passe" placeholder="••••••••" />
+        </div>
+        <div class="form-group">
+          <label>Confirmer le nouveau mot de passe</label>
+          <input type="password" formControlName="nouveau_mot_de_passe_confirmation" placeholder="••••••••" />
+        </div>
+      </div>
+
+      <button type="button" class="btn-primary" (click)="changerMotDePasse()" [disabled]="loadingPassword()">
+        @if (loadingPassword()) {
+          <span class="spinner"></span> Modification...
+        } @else {
+          Modifier le mot de passe
+        }
+      </button>
+    </form>
+  </div>
+</div>

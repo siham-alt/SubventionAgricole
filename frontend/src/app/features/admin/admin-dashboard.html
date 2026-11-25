@@ -1,0 +1,111 @@
+<div class="dashboard">
+  <h1>Tableau de bord décisionnel</h1>
+  <p class="subtitle">Vue d'ensemble et indicateurs clés de performance</p>
+
+  @if (loading()) {
+    <p class="loading-text">Chargement...</p>
+  } @else if (stats(); as s) {
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-value">{{ s.total_demandes }}</div>
+        <div class="kpi-label">Total demandes</div>
+      </div>
+      <div class="kpi-card success">
+        <div class="kpi-value">{{ s.taux_acceptation }}%</div>
+        <div class="kpi-label">Taux d'acceptation</div>
+      </div>
+      <div class="kpi-card accent">
+        <div class="kpi-value">{{ s.montant_total_accorde | number }} DH</div>
+        <div class="kpi-label">Montant total accordé</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-value">{{ s.delai_moyen_jours }}j</div>
+        <div class="kpi-label">Délai moyen de traitement</div>
+      </div>
+    </div>
+
+    <div class="kpi-grid-secondary">
+      <div class="kpi-card-sm success">
+        <span class="kpi-icon">✓</span>
+        <div>
+          <div class="kpi-value-sm">{{ s.total_validees }}</div>
+          <div class="kpi-label-sm">Demandes validées</div>
+        </div>
+      </div>
+      <div class="kpi-card-sm danger">
+        <span class="kpi-icon">✗</span>
+        <div>
+          <div class="kpi-value-sm">{{ s.total_refusees }}</div>
+          <div class="kpi-label-sm">Demandes refusées</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <div class="card">
+        <h2>Répartition par région</h2>
+        <div class="bar-chart">
+          @for (item of s.par_region; track item.region) {
+            <div class="bar-row">
+              <span class="bar-label">{{ item.region }}</span>
+              <div class="bar-track">
+                <div class="bar-fill" [style.width.%]="pourcentageRegion(item.total)"></div>
+              </div>
+              <span class="bar-value">{{ item.total }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Répartition par type de programme</h2>
+        <div class="pie-legend">
+          @for (item of s.par_type; track item.nom_fr; let i = $index) {
+            <div class="legend-item">
+              <span class="legend-dot" [style.background]="'hsl(' + (i * 60 + 100) + ', 55%, 45%)'"></span>
+              <span class="legend-label">{{ item.nom_fr }}</span>
+              <span class="legend-value">{{ item.total }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Demandes par mois (12 derniers mois)</h2>
+      <div class="line-chart">
+        @for (item of s.par_mois; track item.mois) {
+          <div class="line-bar-wrapper">
+            <div class="line-bar" [style.height.px]="hauteurMois(item.total)"></div>
+            <span class="line-label">{{ item.mois }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+  <div class="card">
+  <h2>Performance par agent</h2>
+  <table class="table-agents">
+    <thead>
+      <tr>
+        <th>Agent</th>
+        <th>En cours</th>
+        <th>Approuvés</th>
+        <th>Refusés</th>
+        <th>Délai moyen</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (a of statsAgents(); track a.id) {
+        <tr>
+          <td class="agent-nom">{{ a.name }}</td>
+          <td><span class="badge-cours">{{ a.dossiers_en_cours }}</span></td>
+          <td>{{ a.dossiers_approuves }}</td>
+          <td>{{ a.dossiers_refuses }}</td>
+          <td>{{ a.delai_moyen_jours }}j</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+</div>

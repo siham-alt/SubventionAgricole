@@ -1,0 +1,259 @@
+.page { max-width: 1200px; }
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+
+  h1 { font-size: 22px; color: #263238; margin: 0 0 4px; }
+  .subtitle { color: #607d8b; font-size: 13px; }
+}
+
+.btn-primary {
+  padding: 11px 20px;
+  background: #2E7D32;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover { background: #1B5E20; }
+}
+
+.stats-row {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.stat-mini {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(27,94,32,0.05);
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  min-width: 90px;
+
+  .stat-mini-value { font-size: 20px; font-weight: 700; color: #263238; font-family: 'Poppins', sans-serif; }
+  .stat-mini-label { font-size: 11px; color: #90a4ae; }
+
+  &.success .stat-mini-value { color: #2E7D32; }
+  &.danger .stat-mini-value { color: #d32f2f; }
+}
+
+.filters-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 240px;
+  padding: 11px 16px;
+  border: 1.5px solid #ECEFF1;
+  border-radius: 10px;
+  font-size: 13px;
+
+  &:focus { outline: none; border-color: #2E7D32; }
+}
+
+.filter-chips { display: flex; gap: 8px; }
+
+.filter-chip {
+  padding: 8px 16px;
+  border: 1.5px solid #ECEFF1;
+  border-radius: 20px;
+  background: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  color: #607d8b;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &.active { background: #2E7D32; color: #fff; border-color: #2E7D32; }
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(27,94,32,0.06);
+  padding: 12px 24px;
+}
+
+.loading-text, .empty-state { text-align: center; color: #90a4ae; padding: 50px 0; }
+.empty-icon { font-size: 40px; margin-bottom: 10px; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #90a4ae;
+    font-weight: 600;
+    padding: 14px 12px;
+    border-bottom: 1.5px solid #ECEFF1;
+  }
+
+  td { padding: 12px; font-size: 13px; color: #263238; border-bottom: 1px solid #f5f5f5; }
+}
+
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.user-name-link { font-weight: 600; &:hover { color: #2E7D32; text-decoration: underline; } }
+
+.avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: #2E7D32;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.avatar-large {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: #2E7D32;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 700;
+  text-transform: uppercase;
+}
+
+.role-chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+  text-transform: capitalize;
+  background: #ECEFF1;
+  color: #455a64;
+
+  &.agriculteur { background: #e8f5e9; color: #1B5E20; }
+  &.agent { background: #e3f2fd; color: #1565c0; }
+  &.responsable { background: #fdf6e3; color: #a5820f; }
+  &.administrateur { background: #fce4ec; color: #ad1457; }
+}
+
+.etat-chip {
+  font-size: 11px;
+  font-weight: 600;
+
+  &.actif { color: #2E7D32; }
+  &.inactif { color: #d32f2f; }
+}
+
+.actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.btn-mini {
+  padding: 6px 12px;
+  border: 1px solid #ECEFF1;
+  background: #fff;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover { background: #f5f5f5; }
+  &.btn-danger { color: #d32f2f; border-color: #f5c6cb; &:hover { background: #fdecea; } }
+}
+
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px;
+  max-width: 480px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+
+  h2 { font-size: 18px; color: #1B5E20; margin: 0 0 20px; }
+  h3 { font-size: 13px; color: #1B5E20; margin: 20px 0 10px; }
+}
+
+.alert-danger {
+  background: #fdecea; color: #d32f2f;
+  padding: 10px 14px; border-radius: 8px;
+  font-size: 12px; margin-bottom: 16px;
+}
+
+.form-stack { display: flex; flex-direction: column; gap: 14px; }
+
+.form-group {
+  label { display: block; font-size: 13px; font-weight: 600; color: #263238; margin-bottom: 6px; }
+  input, select {
+    width: 100%; padding: 10px 12px;
+    border: 1.5px solid #ECEFF1; border-radius: 8px;
+    font-size: 13px; box-sizing: border-box;
+    &:focus { outline: none; border-color: #2E7D32; }
+  }
+}
+
+.modal-actions {
+  display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;
+}
+
+.btn-secondary {
+  padding: 10px 20px;
+  background: #fff; color: #607d8b;
+  border: 1.5px solid #ECEFF1; border-radius: 8px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  &:hover { background: #f5f5f5; }
+}
+
+.detail-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 20px; padding-bottom: 20px;
+  border-bottom: 1px solid #f0f0f0;
+
+  h2 { margin: 0 0 2px; }
+  .detail-email { font-size: 12px; color: #90a4ae; margin: 0; }
+}
+
+.detail-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+
+  .info-label { display: block; font-size: 10px; text-transform: uppercase; color: #90a4ae; font-weight: 600; }
+  .info-value { font-size: 13px; color: #263238; font-weight: 600; }
+}
+
+.mini-dossiers-list { display: flex; flex-direction: column; gap: 6px; }
+
+.mini-dossier-row {
+  display: flex; justify-content: space-between;
+  padding: 8px 12px;
+  background: #f8faf8;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.statut-mini { color: #2E7D32; font-weight: 600; text-transform: capitalize; }

@@ -1,0 +1,48 @@
+<div class="layout">
+  <header class="navbar">
+   <a routerLink="/" class="navbar-brand">
+  <span class="brand-icon">🌾</span>
+  <span>Subventions Agricoles</span>
+   </a>
+
+    <nav class="navbar-nav">
+      <a routerLink="/agriculteur" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Accueil</a>
+      <a routerLink="/agriculteur/demandes" routerLinkActive="active">Mes demandes</a>
+      <a routerLink="/agriculteur/documents" routerLinkActive="active">Documents</a>
+    </nav>
+
+    <div class="navbar-actions">
+     <button
+  class="icon-btn"
+  [class.bell-shake]="animerCloche()"
+  routerLink="/agriculteur/notifications"
+  title="Notifications">
+  🔔
+  @if (notificationsNonLues() > 0) {
+    <span class="badge" [class.badge-pulse]="notificationsNonLues() > 0">{{ notificationsNonLues() }}</span>
+  }
+</button>
+
+     <div class="user-menu" (click)="toggleMenu()">
+  @if (auth.photoUrl(); as photo) {
+    <img [src]="photo" class="user-avatar user-avatar-img" alt="Photo de profil" />
+  } @else {
+    <div class="user-avatar">{{ auth.currentUser()?.name?.charAt(0) }}</div>
+  }
+  <span class="chevron">▾</span>
+
+  @if (menuOuvert()) {
+    <div class="dropdown" (click)="$event.stopPropagation()">
+      <a routerLink="/agriculteur/profil">👤 Profil</a>
+      <a routerLink="/agriculteur/parametres">⚙️ Paramètres</a>
+      <button (click)="seDeconnecter()">🚪 Déconnexion</button>
+    </div>
+  }
+</div>
+    </div>
+  </header>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

@@ -1,0 +1,110 @@
+.page { max-width: 1100px; }
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  h1 { font-size: 22px; color: #263238; }
+}
+
+.btn-primary {
+  padding: 11px 20px;
+  background: #2E7D32;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover { background: #1B5E20; }
+}
+
+.filters-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.search-input, .filter-select {
+  padding: 11px 14px;
+  border: 1.5px solid #ECEFF1;
+  border-radius: 10px;
+  font-size: 13px;
+
+  &:focus { outline: none; border-color: #2E7D32; }
+}
+
+.search-input { flex: 1; }
+.filter-select { min-width: 220px; }
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(27,94,32,0.06);
+  padding: 12px 24px;
+}
+
+.loading-text, .empty-state {
+  text-align: center;
+  padding: 50px 0;
+  color: #90a4ae;
+}
+
+.empty-icon { font-size: 40px; margin-bottom: 10px; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #90a4ae;
+    font-weight: 600;
+    padding: 14px 12px;
+    border-bottom: 1.5px solid #ECEFF1;
+  }
+
+  td {
+    padding: 16px 12px;
+    font-size: 13px;
+    color: #263238;
+    border-bottom: 1px solid #f5f5f5;
+  }
+
+  .numero { font-weight: 700; color: #1B5E20; }
+}
+
+.row-clickable {
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover { background: #f1f8f1; }
+}
+
+.statut-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.link-detail {
+  color: #2E7D32;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.tag-brouillon {
+  background: #ECEFF1; color: #607d8b;
+  font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-left: 6px;
+}
+.link-continuer { color: #D4A72C; font-weight: 700; font-size: 12px; }

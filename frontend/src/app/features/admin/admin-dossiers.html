@@ -1,0 +1,75 @@
+<div class="page">
+  <div class="header-row">
+    <div>
+      <h1>Suivi de tous les dossiers</h1>
+      <p class="subtitle">Vue globale — qui traite quoi</p>
+    </div>
+  </div>
+
+  <div class="filters-row">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="🔍 Rechercher par référence ou agriculteur..."
+      [value]="recherche()"
+      (input)="recherche.set($any($event.target).value)"
+    />
+    <select class="filter-select" (change)="filtreStatut.set($any($event.target).value)">
+      <option value="tous">Tous les statuts</option>
+      <option value="soumis">Soumis</option>
+      <option value="en_cours_verification">En vérification</option>
+      <option value="complement_demande">Complément demandé</option>
+      <option value="approuve">Approuvé</option>
+      <option value="refuse">Refusé</option>
+    </select>
+  </div>
+
+  <div class="results-count">
+    {{ dossiersFiltres.length }} dossier{{ dossiersFiltres.length > 1 ? 's' : '' }}
+  </div>
+
+  <div class="card">
+    @if (loading()) {
+      <p class="loading-text">Chargement...</p>
+    } @else if (dossiersFiltres.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">📁</div>
+        <p>Aucun dossier ne correspond à ces critères.</p>
+      </div>
+    } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Référence</th>
+            <th>Agriculteur</th>
+            <th>Programme</th>
+            <th>Traité par</th>
+            <th>Statut</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (d of dossiersFiltres; track d.id) {
+<tr [routerLink]="['/admin/dossiers', d.id]" class="row-clickable">              <td class="numero">{{ d.numero_dossier }}</td>
+              <td>{{ d.user?.name }}</td>
+              <td>{{ d.type_subvention?.nom_fr }}</td>
+             <td>
+  @if (d.agent_traitant) {
+    <span class="agent-tag">{{ d.agent_traitant.name }}</span>
+  } @else {
+    <span class="non-assigne">Aucune action encore</span>
+  }
+</td>
+              <td>
+                <span class="statut-badge" [style.background]="statutsCouleurs[d.statut]">
+                  {{ statutsLabels[d.statut] }}
+                </span>
+              </td>
+              <td><span class="link-detail">Voir →</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

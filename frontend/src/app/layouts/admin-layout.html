@@ -1,0 +1,33 @@
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">🌾</span>
+      <span>Administration</span>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">{{ auth.currentUser()?.name?.charAt(0) }}</div>
+      <div class="user-info">
+        <div class="user-name">{{ auth.currentUser()?.name }}</div>
+        <div class="user-role">{{ auth.currentUser()?.roles?.[0]?.name }}</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">📊 Dashboard</a>
+      <a routerLink="/admin/utilisateurs" routerLinkActive="active">👥 Utilisateurs</a>
+      <a routerLink="/admin/programmes" routerLinkActive="active">💰 Programmes</a>
+      <a routerLink="/admin/dossiers" routerLinkActive="active">📁 Dossiers</a>
+      <a routerLink="/admin/messages" routerLinkActive="active">💬 Messages</a>
+      <!-- <a routerLink="/admin/notifications" routerLinkActive="active">🔔 Notifications</a> -->
+      <a routerLink="/admin/rapports" routerLinkActive="active">📈 Rapports</a>
+      <a routerLink="/admin/parametres" routerLinkActive="active">⚙️ Paramètres</a>
+    </nav>
+
+    <button class="btn-logout" (click)="seDeconnecter()">🚪 Déconnexion</button>
+  </aside>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

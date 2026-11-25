@@ -1,0 +1,376 @@
+<div class="page">
+  <a routerLink="/agent/dossiers" class="back-link">← Retour à la liste</a>
+
+  @if (loading()) {
+    <p class="loading-text">Chargement...</p>
+  } @else if (dossier(); as d) {
+    <div class="header-card">
+      <div>
+        <h1>{{ d.numero_dossier }}</h1>
+        <p class="subtitle">
+          {{ d.user?.name }} • {{ d.type_subvention?.nom_fr }}
+          @if (d.agent_traitant) { • Traité par {{ d.agent_traitant.name }} }
+        </p>
+      </div>
+      <span class="statut-badge" [style.background]="statutsCouleurs[d.statut]">
+        {{ statutsLabels[d.statut] }}
+      </span>
+    </div>
+
+    <div class="two-columns">
+      <div class="col-left">
+        <div class="card">
+          <h2>Informations</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Exploitation</span>
+              <span class="info-value">{{ d.exploitation?.nom_exploitation }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Superficie</span>
+              <span class="info-value">{{ d.exploitation?.superficie_hectares }} ha</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Localisation</span>
+              <span class="info-value">{{ d.exploitation?.commune }}, {{ d.exploitation?.province }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Montant demandé</span>
+              <span class="info-value">{{ d.montant_demande | number }} DH</span>
+            </div>
+
+            <div class="info-item">
+              <span class="info-label">Statut juridique</span>
+              <span class="info-value">{{ getStatutJuridique(d) }}</span>
+            </div>
+
+            @if (d.nom_representant_legal) {
+              <div class="info-item">
+                <span class="info-label">Représentant légal</span>
+                <span class="info-value">{{ d.nom_representant_legal }}</span>
+              </div>
+            }
+            @if (d.numero_immatriculation) {
+              <div class="info-item">
+                <span class="info-label">N° immatriculation</span>
+                <span class="info-value">{{ d.numero_immatriculation }}</span>
+              </div>
+            }
+
+            <div class="info-item">
+              <span class="info-label">Statut foncier</span>
+              <span class="info-value">{{ getModeTenure(d) }}</span>
+            </div>
+            @if (d.numero_titre_foncier) {
+              <div class="info-item">
+                <span class="info-label">N° titre foncier</span>
+                <span class="info-value">{{ d.numero_titre_foncier }}</span>
+              </div>
+            }
+
+            @if (d.type_equipement) {
+              <div class="info-item">
+                <span class="info-label">Équipement / investissement</span>
+                <span class="info-value">{{ d.type_equipement }}</span>
+              </div>
+            }
+            @if (d.nombre_unites) {
+              <div class="info-item">
+                <span class="info-label">Nombre d'unités</span>
+                <span class="info-value">{{ d.nombre_unites }}</span>
+              </div>
+            }
+
+            @if (d.cout_total_projet) {
+              <div class="info-item">
+                <span class="info-label">Coût total du projet</span>
+                <span class="info-value">{{ d.cout_total_projet | number }} DH</span>
+              </div>
+            }
+            @if (d.apport_personnel) {
+              <div class="info-item">
+                <span class="info-label">Apport personnel</span>
+                <span class="info-value">{{ d.apport_personnel | number }} DH</span>
+              </div>
+            }
+
+            @if (d.nom_banque || d.rib) {
+              <div class="info-block">
+                <h3>🏦 Coordonnées bancaires</h3>
+                @if (d.nom_banque) {
+                  <p>{{ d.nom_banque }}@if (d.agence_bancaire) { — {{ d.agence_bancaire }} }</p>
+                }
+                @if (d.rib) { <p class="text-muted">RIB : {{ d.rib }}</p> }
+              </div>
+            }
+
+            @if (d.date_debut_prevue || d.date_fin_prevue) {
+              <div class="info-item">
+                <span class="info-label">Calendrier prévisionnel</span>
+                <span class="info-value">
+                  @if (d.date_debut_prevue) { {{ d.date_debut_prevue | date: 'dd/MM/yyyy' }} }
+                  @if (d.date_debut_prevue && d.date_fin_prevue) { → }
+                  @if (d.date_fin_prevue) { {{ d.date_fin_prevue | date: 'dd/MM/yyyy' }} }
+                </span>
+              </div>
+            }
+
+            @if (d.a_deja_beneficie) {
+              <div class="info-item">
+                <span class="info-label">Antécédents</span>
+                <span class="info-value">
+                  A déjà bénéficié
+                  @if (d.reference_subvention_precedente) { ({{ d.reference_subvention_precedente }}) }
+                </span>
+              </div>
+            }
+
+            @if (d.telephone_contact_projet || d.email_contact_projet) {
+              <div class="info-item">
+                <span class="info-label">Contact projet</span>
+                <span class="info-value">
+                  {{ d.telephone_contact_projet }}
+                  @if (d.telephone_contact_projet && d.email_contact_projet) { · }
+                  {{ d.email_contact_projet }}
+                </span>
+              </div>
+            }
+          </div>
+
+          @if (d.description_projet) {
+            <div class="description-block">
+              <span class="info-label">Description du projet</span>
+              <p>{{ d.description_projet }}</p>
+            </div>
+          }
+        </div>
+
+        <div class="card">
+          <div class="doc-header-row">
+            <h2>Documents à vérifier</h2>
+            @if (!tousDocumentsVerifies) {
+              <span class="alert-chip">{{ documentsEnAttenteCount }} en attente</span>
+            } @else {
+              <span class="ok-chip">✓ Tous vérifiés</span>
+            }
+          </div>
+
+          @if (d.statut === 'soumis') {
+            <p class="hint-info">
+              ⚠ Cliquez sur « Démarrer la vérification » (colonne de droite) pour pouvoir valider ou refuser les documents.
+            </p>
+          }
+
+          <div class="documents-list">
+            @for (doc of d.documents; track doc.id) {
+              <div class="document-row" [class]="doc.statut_verification">
+                <div class="document-info">
+                  <span class="doc-icon">📄</span>
+                  <div>
+                    <div class="document-nom">{{ documentsLabels[doc.type_document] }}</div>
+                    <div class="document-fichier">{{ doc.nom_original }}</div>
+                    @if (doc.commentaire_agent) {
+                      <div class="commentaire-refus">💬 {{ doc.commentaire_agent }}</div>
+                    }
+                  </div>
+                </div>
+                <div class="document-actions">
+                  <button class="btn-consulter" (click)="consulterDocument(doc.url)">👁 Consulter</button>
+                  @if (doc.statut_verification === 'en_attente') {
+                    <button
+                      class="btn-doc-valide"
+                      [disabled]="d.statut === 'soumis'"
+                      [title]="d.statut === 'soumis' ? 'Démarrez la vérification avant d\'agir sur les documents' : ''"
+                      (click)="ouvrirValidationDoc(doc.id)">
+                      ✓ Valider
+                    </button>
+                    <button
+                      class="btn-doc-refuse"
+                      [disabled]="d.statut === 'soumis'"
+                      [title]="d.statut === 'soumis' ? 'Démarrez la vérification avant d\'agir sur les documents' : ''"
+                      (click)="ouvrirRefusDoc(doc.id)">
+                      ✗ Refuser
+                    </button>
+                  } @else {
+                    <span class="statut-doc" [class]="doc.statut_verification">
+                      {{ doc.statut_verification === 'valide' ? '✓ Validé' : '✗ Refusé' }}
+                    </span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        @if (d.historique && d.historique.length > 0) {
+          <div class="card">
+            <h2>Historique du dossier</h2>
+            <div class="historique-list">
+              @for (h of d.historique; track h.id) {
+                <div class="historique-item">
+                  <span class="historique-dot"></span>
+                  <div>
+                    <p class="historique-action">
+                      {{ h.action === 'creation' ? 'Dossier créé' :
+                         h.action === 'ajout_document' ? h.commentaire :
+                         h.commentaire || 'Changement de statut : ' + h.statut_apres }}
+                    </p>
+                    <p class="historique-meta">{{ h.user?.name }} — {{ h.created_at | date: 'dd/MM/yyyy à HH:mm' }}</p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="col-right">
+        <div class="card messagerie-card">
+          <h2>💬 Messagerie avec l'agriculteur</h2>
+          <div class="messages-list">
+            @for (msg of messages(); track msg.id) {
+              <div class="message-bubble" [class.mine]="msg.expediteur_id !== d.user?.id">
+                <div class="message-auteur">{{ msg.expediteur?.name }}</div>
+                <div class="message-contenu">{{ msg.contenu }}</div>
+                <div class="message-date">{{ msg.created_at | date: 'dd/MM HH:mm' }}</div>
+              </div>
+            } @empty {
+              <p class="empty-messages">Aucun message pour l'instant.</p>
+            }
+          </div>
+          <div class="message-input-row">
+            <textarea
+              rows="2"
+              placeholder="Écrire un message à l'agriculteur..."
+              [value]="nouveauMessage()"
+              (input)="nouveauMessage.set($any($event.target).value)"
+            ></textarea>
+            <button class="btn-envoyer" [disabled]="envoiMessageEnCours() || !nouveauMessage().trim()" (click)="envoyerMessage()">
+              Envoyer
+            </button>
+          </div>
+        </div>
+
+        <div class="card actions-card">
+          <h2>Actions</h2>
+
+          @if (d.statut === 'approuve' || d.statut === 'refuse') {
+            <p class="statut-final-text">Ce dossier a déjà reçu une décision finale.</p>
+          } @else {
+            @if (d.statut === 'soumis') {
+              <button class="btn-action btn-avancer" [disabled]="actionEnCours()" (click)="passerEnVerification()">
+                → Démarrer la vérification
+              </button>
+            }
+
+            <div class="form-group">
+              <label>Montant à accorder (DH)</label>
+              <input
+                type="number"
+                [value]="montantAccorde()"
+                (input)="montantAccorde.set(+$any($event.target).value)"
+              />
+            </div>
+
+            <button
+              class="btn-action btn-valider"
+              [disabled]="actionEnCours() || d.statut === 'soumis' || !tousDocumentsVerifies"
+              (click)="ouvrirValidationDossier()"
+              [title]="d.statut === 'soumis' ? 'Démarrez la vérification avant de valider' : (!tousDocumentsVerifies ? 'Vérifiez tous les documents avant de valider' : '')"
+            >
+              ✓ Valider le dossier
+            </button>
+            @if (d.statut !== 'soumis' && !tousDocumentsVerifies) {
+              <p class="hint-warning">⚠ Vérifiez tous les documents avant de pouvoir valider.</p>
+            }
+
+            <button
+              class="btn-action btn-refuser"
+              [disabled]="actionEnCours() || d.statut === 'soumis'"
+              [title]="d.statut === 'soumis' ? 'Démarrez la vérification avant de refuser' : ''"
+              (click)="ouvrirRefusDossier()">
+              ✗ Refuser le dossier
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ===== MODALES ===== -->
+
+  @if (modaleActive() === 'valider-doc') {
+    <div class="modal-overlay" (click)="fermerModale()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h3>Confirmer la validation du document</h3>
+        <p class="modal-text">Ce document sera marqué comme valide. Confirmez-vous ?</p>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="fermerModale()">Annuler</button>
+          <button class="btn-confirm-valide" [disabled]="actionEnCours()" (click)="confirmerValidationDoc()">
+            ✓ Confirmer
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (modaleActive() === 'refuser-doc') {
+    <div class="modal-overlay" (click)="fermerModale()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h3>Refuser le document</h3>
+        <p class="modal-text">Expliquez pourquoi ce document est refusé (l'agriculteur en sera informé et devra le renvoyer).</p>
+        <textarea
+          rows="4"
+          placeholder="Ex: Document illisible, informations manquantes, document expiré..."
+          [value]="texteMotif()"
+          (input)="texteMotif.set($any($event.target).value)"
+        ></textarea>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="fermerModale()">Annuler</button>
+          <button class="btn-confirm-refuse" [disabled]="actionEnCours() || !texteMotif().trim()" (click)="confirmerRefusDoc()">
+            ✗ Confirmer le refus
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (modaleActive() === 'refuser-dossier') {
+    <div class="modal-overlay" (click)="fermerModale()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h3>Refuser le dossier</h3>
+        <p class="modal-text">Cette action est définitive. Indiquez le motif de refus (transmis à l'agriculteur).</p>
+        <textarea
+          rows="4"
+          placeholder="Ex: Le projet ne correspond pas aux critères d'éligibilité du programme..."
+          [value]="texteMotif()"
+          (input)="texteMotif.set($any($event.target).value)"
+        ></textarea>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="fermerModale()">Annuler</button>
+          <button class="btn-confirm-refuse" [disabled]="actionEnCours() || !texteMotif().trim()" (click)="confirmerRefusDossier()">
+            ✗ Confirmer le refus définitif
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (modaleActive() === 'valider-dossier') {
+    <div class="modal-overlay" (click)="fermerModale()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h3>Confirmer l'approbation</h3>
+        <p class="modal-text">
+          Vous êtes sur le point d'approuver ce dossier pour un montant de
+          <strong>{{ montantAccorde() | number }} DH</strong>. Cette action est définitive.
+        </p>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="fermerModale()">Annuler</button>
+          <button class="btn-confirm-valide" [disabled]="actionEnCours()" (click)="confirmerValidationDossier()">
+            ✓ Confirmer l'approbation
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

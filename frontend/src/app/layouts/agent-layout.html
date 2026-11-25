@@ -1,0 +1,29 @@
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">🌾</span>
+      <span>Espace Agent</span>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">{{ auth.currentUser()?.name?.charAt(0) }}</div>
+      <div class="user-info">
+        <div class="user-name">{{ auth.currentUser()?.name }}</div>
+        <div class="user-role">Agent</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/agent" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">📊 Dashboard</a>
+      <a routerLink="/agent/dossiers" routerLinkActive="active">📋 Liste des dossiers</a>
+      <a routerLink="/agent/messages" routerLinkActive="active">💬 Messages</a>
+      <a routerLink="/agent/statistiques" routerLinkActive="active">📈 Statistiques</a>
+    </nav>
+
+    <button class="btn-logout" (click)="seDeconnecter()">🚪 Déconnexion</button>
+  </aside>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

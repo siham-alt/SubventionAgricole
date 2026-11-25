@@ -1,0 +1,190 @@
+<div class="auth-page">
+  <!-- ===== COLONNE GAUCHE — VISUEL ===== -->
+  <div class="auth-visual">
+    <div class="auth-visual-overlay"></div>
+    <div class="auth-visual-content">
+      <a routerLink="/" class="brand">
+        <span class="brand-icon">🌾</span>
+        <span class="brand-text">Subventions Agricoles</span>
+      </a>
+      <div class="auth-visual-text">
+        <h2>Rejoignez la plateforme</h2>
+        <p>Créez votre compte agriculteur et accédez à l'ensemble des programmes de subvention disponibles pour votre exploitation.</p>
+      </div>
+      <div class="auth-visual-badges">
+        <div class="badge">
+          <span class="badge-icon">✓</span>
+          <span>Inscription gratuite et rapide</span>
+        </div>
+        <div class="badge">
+          <span class="badge-icon">✓</span>
+          <span>Accompagnement à chaque étape</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== COLONNE DROITE — FORMULAIRE ===== -->
+  <div class="auth-form-side">
+    <div class="auth-form-wrapper register-wrapper">
+      <a routerLink="/" class="back-home">← Retour à l'accueil</a>
+
+      <div class="auth-form-header">
+        <h1>Créer un compte agriculteur</h1>
+        <p>Renseignez vos informations pour commencer</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
+        @if (errorMessage()) {
+          <div class="alert alert-danger">{{ errorMessage() }}</div>
+        }
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nom complet</label>
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="Ahmed Alaoui"
+              [class.invalid]="isInvalid('name')"
+            />
+            @if (isInvalid('name')) {
+              <span class="field-error">{{ getError('name') }}</span>
+            }
+          </div>
+          <div class="form-group">
+            <label>CIN</label>
+            <input
+              type="text"
+              formControlName="cin"
+              placeholder="AB123456"
+              [class.invalid]="isInvalid('cin')"
+            />
+            @if (isInvalid('cin')) {
+              <span class="field-error">{{ getError('cin') }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="exemple@email.com"
+              [class.invalid]="isInvalid('email')"
+            />
+            @if (isInvalid('email')) {
+              <span class="field-error">{{ getError('email') }}</span>
+            }
+          </div>
+          <div class="form-group">
+            <label>Téléphone</label>
+            <input
+              type="text"
+              formControlName="telephone"
+              placeholder="0612345678"
+              [class.invalid]="isInvalid('telephone')"
+            />
+            @if (isInvalid('telephone')) {
+              <span class="field-error">{{ getError('telephone') }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row form-row-3">
+          <div class="form-group">
+            <label>Région</label>
+            <select
+              formControlName="region"
+              (change)="onRegionChange()"
+              [class.invalid]="isInvalid('region')"
+            >
+              <option value="" disabled>Sélectionnez une région</option>
+              @for (region of regions; track region.nom) {
+                <option [value]="region.nom">{{ region.nom }}</option>
+              }
+            </select>
+            @if (isInvalid('region')) {
+              <span class="field-error">{{ getError('region') }}</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Province</label>
+            <select
+              formControlName="province"
+              (change)="onProvinceChange()"
+              [class.invalid]="isInvalid('province')"
+            >
+              <option value="" disabled>Sélectionnez une province</option>
+              @for (province of availableProvinces; track province.nom) {
+                <option [value]="province.nom">{{ province.nom }}</option>
+              }
+            </select>
+            @if (isInvalid('province')) {
+              <span class="field-error">{{ getError('province') }}</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label>Commune</label>
+            <select
+              formControlName="commune"
+              [class.invalid]="isInvalid('commune')"
+            >
+              <option value="" disabled>Sélectionnez une commune</option>
+              @for (commune of availableCommunes; track commune) {
+                <option [value]="commune">{{ commune }}</option>
+              }
+            </select>
+            @if (isInvalid('commune')) {
+              <span class="field-error">{{ getError('commune') }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Mot de passe</label>
+            <input
+              type="password"
+              formControlName="password"
+              placeholder="••••••••"
+              [class.invalid]="isInvalid('password')"
+            />
+            @if (isInvalid('password')) {
+              <span class="field-error">{{ getError('password') }}</span>
+            }
+          </div>
+          <div class="form-group">
+            <label>Confirmer le mot de passe</label>
+            <input
+              type="password"
+              formControlName="password_confirmation"
+              placeholder="••••••••"
+              [class.invalid]="isInvalid('password_confirmation')"
+            />
+            @if (isInvalid('password_confirmation')) {
+              <span class="field-error">{{ getError('password_confirmation') }}</span>
+            }
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" [disabled]="loading()">
+          @if (loading()) {
+            <span class="spinner"></span>
+            <span>Création en cours...</span>
+          } @else {
+            <span>Créer mon compte</span>
+          }
+        </button>
+
+        <p class="auth-footer">
+          Déjà un compte ? <a routerLink="/login">Se connecter</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>

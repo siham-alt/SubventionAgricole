@@ -1,0 +1,79 @@
+<app-navbar />
+
+<div class="programmes-page">
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <span class="hero-eyebrow">Programmes de subvention</span>
+    <h1>Un programme pour chaque projet agricole</h1>
+    <p class="hero-lede">
+      Irrigation, équipement, plantation, élevage… découvrez les subventions actives
+      et leurs conditions avant de déposer votre dossier.
+    </p>
+
+    <div class="recherche">
+      <input
+        type="text"
+        placeholder="Rechercher un programme (ex. irrigation, serre, élevage…)"
+        [value]="recherche()"
+        (input)="miseAJourRecherche($any($event.target).value)"
+      />
+    </div>
+  </section>
+
+  <!-- ===== LISTE ===== -->
+  @if (loading()) {
+    <p class="loading-text">Chargement des programmes…</p>
+  } @else if (programmesFiltres().length === 0) {
+    <div class="empty-state">
+      <p>Aucun programme ne correspond à votre recherche.</p>
+    </div>
+  } @else {
+    <div class="programmes-grid">
+      @for (p of programmesFiltres(); track p.id) {
+        <div class="programme-card">
+          <h3>{{ p.nom_fr }}</h3>
+          <p class="programme-desc">{{ p.description_fr }}</p>
+
+          <div class="programme-meta">
+            @if (p.taux_subvention) {
+              <span class="badge">{{ p.taux_subvention }}% du projet</span>
+            }
+            @if (p.montant_max) {
+              <span class="badge accent">{{ p.montant_max | number }} DH max</span>
+            }
+          </div>
+
+@if (p.documents_requis.length) {            <div class="programme-docs">
+              <span class="docs-label">Documents requis</span>
+              <div class="docs-tags">
+                @for (doc of p.documents_requis; track doc) {
+                  <span class="doc-tag">{{ documentsLabels[doc] || doc }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          <a
+            [routerLink]="['/agriculteur/demandes/nouvelle']"
+            [queryParams]="{ programme: p.id }"
+            class="programme-cta"
+          >
+            Déposer une demande →
+          </a>
+          
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ===== SUITE ===== -->
+  <section class="suite">
+    <p>Vous ne savez pas quel programme choisir&nbsp;?</p>
+    <div class="suite-liens">
+      <a routerLink="/guide" class="lien-secondaire">Consulter le guide</a>
+      <a routerLink="/contact" class="lien-secondaire">Contacter un agent</a>
+    </div>
+  </section>
+
+</div>

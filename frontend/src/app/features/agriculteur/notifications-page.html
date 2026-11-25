@@ -1,0 +1,64 @@
+<div class="page">
+  <div class="header-row">
+    <div class="header-titles">
+      <h1>Notifications</h1>
+     
+    </div>
+    <button class="btn-link" (click)="toutMarquerLu()">
+      <span class="btn-link-icon">✓</span>
+      Tout marquer comme lu
+    </button>
+  </div>
+
+  <div class="card">
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p class="loading-text">Chargement...</p>
+      </div>
+    } @else if (notifications().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">🔔</div>
+        <p class="empty-title">Aucune notification</p>
+        <p class="empty-subtitle">Vous serez averti ici des mises à jour de vos dossiers.</p>
+      </div>
+    } @else {
+      <div class="notif-list">
+        @for (notif of notifications(); track notif.id) {
+          <div class="notif-item" [class.non-lu]="!notif.lu">
+            @if (!notif.lu) {
+              <span class="notif-bar" aria-hidden="true"></span>
+            }
+            <span class="notif-icon-wrapper" [attr.data-type]="notif.type">
+              <span class="notif-icon">{{ iconesParType[notif.type] }}</span>
+            </span>
+            <div class="notif-content">
+              <div class="notif-titre">{{ notif.titre }}</div>
+              <div class="notif-message">{{ notif.message }}</div>
+              <div class="notif-date">{{ notif.created_at | date: 'dd/MM/yyyy à HH:mm' }}</div>
+            </div>
+            <div class="notif-actions">
+              @if (notif.dossier_id) {
+                <a [routerLink]="['/agriculteur/demandes', notif.dossier_id]" class="notif-link">
+                  Voir <span class="notif-link-arrow">→</span>
+                </a>
+              }
+              @if (!notif.lu) {
+                <button
+                  type="button"
+                  class="notif-check"
+                  title="Marquer comme lu"
+                  aria-label="Marquer comme lu"
+                  (click)="marquerLu(notif)">
+                  ✓
+                </button>
+              } @else {
+                <span class="notif-check notif-check-done" title="Lu" aria-hidden="true">✓</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

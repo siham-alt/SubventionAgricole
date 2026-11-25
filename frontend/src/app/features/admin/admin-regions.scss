@@ -1,0 +1,74 @@
+.page { max-width: 800px; }
+
+h1 { font-size: 22px; color: #263238; margin-bottom: 20px; }
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(27,94,32,0.06);
+  padding: 24px;
+  margin-bottom: 20px;
+
+  h2 { font-size: 15px; color: #1B5E20; margin: 0 0 16px; }
+}
+
+.form-inline {
+  display: flex;
+  gap: 12px;
+
+  input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1.5px solid #ECEFF1;
+    border-radius: 8px;
+    font-size: 13px;
+
+    &:focus { outline: none; border-color: #2E7D32; }
+  }
+}
+
+.btn-primary {
+  padding: 10px 20px;
+  background: #2E7D32;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover { background: #1B5E20; }
+}
+
+.loading-text, .empty-text { text-align: center; color: #90a4ae; padding: 30px 0; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #90a4ae;
+    font-weight: 600;
+    padding: 12px 8px;
+    border-bottom: 1.5px solid #ECEFF1;
+  }
+
+  td { padding: 12px 8px; font-size: 13px; border-bottom: 1px solid #f5f5f5; }
+}
+
+.btn-mini {
+  padding: 6px 12px;
+  border: 1px solid #f5c6cb;
+  background: #fff;
+  color: #d32f2f;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover { background: #fdecea; }
+}

@@ -1,0 +1,36 @@
+@use '@angular/material' as mat;
+
+// On part d'une palette prédéfinie verte (proche de notre besoin)
+$my-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$green-palette,
+    tertiary: mat.$orange-palette,
+  ),
+  typography: (
+    brand-family: 'Roboto',
+    plain-family: 'Roboto',
+  ),
+  density: (
+    scale: 0,
+  ),
+));
+
+html {
+  @include mat.all-component-themes($my-theme);
+
+  // ===== Surcharge avec la palette officielle exacte du Ministère =====
+  --mat-sys-primary: #2E7D32;              // Vert agricole -> boutons
+  --mat-sys-on-primary: #ffffff;
+  --mat-sys-primary-container: #1B5E20;    // Vert foncé -> navigation
+  --mat-sys-on-primary-container: #ffffff;
+
+  --mat-sys-secondary: #81C784;            // Vert clair -> secondaire
+  --mat-sys-on-secondary: #263238;
+
+  --mat-sys-tertiary: #D4A72C;             // Doré -> accents
+  --mat-sys-on-tertiary: #263238;
+
+  --mat-sys-surface: #F8FAF8;              // Blanc cassé -> fond
+  --mat-sys-on-surface: #263238;           // Gris foncé -> texte
+}

@@ -1,0 +1,58 @@
+<app-navbar />
+
+<div class="faq-page">
+
+  <section class="hero">
+    <span class="hero-eyebrow">Questions fréquentes</span>
+    <h1>Une réponse avant même de demander</h1>
+    <p class="hero-lede">
+      Documents, délais, statuts, versement : les réponses aux questions les plus posées
+      par les agriculteurs qui déposent un dossier.
+    </p>
+  </section>
+
+  <div class="faq-layout">
+
+    <!-- ===== NAVIGATION CATEGORIES ===== -->
+    <nav class="categories" aria-label="Catégories de questions">
+      @for (cat of categories; track cat.cle) {
+        <button
+          type="button"
+          class="categorie-btn"
+          [class.active]="categorieActive() === cat.cle"
+          (click)="choisirCategorie(cat.cle)"
+        >
+          {{ cat.titre }}
+        </button>
+      }
+    </nav>
+
+    <!-- ===== QUESTIONS ===== -->
+    <div class="questions">
+      @for (item of categorieCourante.questions; track item.q) {
+        <div class="question-item" [class.ouverte]="questionOuverte() === item.q">
+          <button
+            type="button"
+            class="question-header"
+            (click)="toggleQuestion(item.q)"
+            [attr.aria-expanded]="questionOuverte() === item.q"
+          >
+            <span>{{ item.q }}</span>
+            <span class="question-signe">{{ questionOuverte() === item.q ? '−' : '+' }}</span>
+          </button>
+
+          @if (questionOuverte() === item.q) {
+            <p class="question-reponse">{{ item.r }}</p>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- ===== SUITE ===== -->
+  <section class="suite">
+    <p>Votre question ne trouve pas de réponse ici&nbsp;?</p>
+    <a routerLink="/agriculteur/contact" class="suite-cta">Contacter un agent →</a>
+  </section>
+
+</div>

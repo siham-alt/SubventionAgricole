@@ -1,0 +1,302 @@
+.page {
+  max-width: 780px;
+}
+
+// ---------- Header ----------
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.header-titles {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  h1 {
+    font-size: 23px;
+    font-weight: 800;
+    color: #1b2e20;
+    letter-spacing: -0.4px;
+  }
+}
+
+.header-count {
+  background: #2E7D32;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  line-height: 1.6;
+}
+
+.btn-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #fff;
+  border: 1px solid #d7e6d8;
+  color: #2E7D32;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 9px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: #f1f8f1;
+    border-color: #a9cfab;
+  }
+
+  &:active {
+    background: #e8f5e9;
+  }
+}
+
+.btn-link-icon {
+  font-size: 11px;
+  font-weight: 800;
+}
+
+// ---------- Card wrapper (no longer a bordered box, just a container) ----------
+.card {
+  background: transparent;
+  padding: 0;
+}
+
+// ---------- Loading state ----------
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 70px 0;
+  color: #90a4ae;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 14px rgba(27, 94, 32, 0.06);
+}
+
+.spinner {
+  width: 26px;
+  height: 26px;
+  border: 3px solid #e8f0e8;
+  border-top-color: #2E7D32;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 14px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 13px;
+}
+
+// ---------- Empty state ----------
+.empty-state {
+  text-align: center;
+  padding: 64px 20px;
+  color: #90a4ae;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 14px rgba(27, 94, 32, 0.06);
+}
+
+.empty-icon {
+  font-size: 44px;
+  margin-bottom: 14px;
+  opacity: 0.5;
+  filter: grayscale(0.4);
+}
+
+.empty-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #546e7a;
+  margin-bottom: 6px;
+}
+
+.empty-subtitle {
+  font-size: 13px;
+  color: #b0bec5;
+  max-width: 280px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+// ---------- Notification list: distinct cards, not a single flat block ----------
+.notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  background: #fff;
+  border-radius: 13px;
+  border: 1px solid #eef1ee;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(27, 94, 32, 0.08);
+    border-color: #e2e9e2;
+  }
+
+  &.non-lu {
+    background: #f8fbf8;
+    border-color: #dcebdd;
+  }
+}
+
+.notif-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: #2E7D32;
+}
+
+.notif-icon-wrapper {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef4ee;
+  margin-top: 1px;
+
+  &[data-type="danger"] {
+    background: #fdecea;
+  }
+
+  &[data-type="warning"] {
+    background: #fff4e0;
+  }
+
+  &[data-type="success"] {
+    background: #e8f5e9;
+  }
+
+  &[data-type="info"] {
+    background: #e8f0fd;
+  }
+}
+
+.notif-icon {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.notif-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notif-titre {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1b2e20;
+  margin-bottom: 3px;
+}
+
+.notif-message {
+  font-size: 13px;
+  color: #607d8b;
+  margin-bottom: 5px;
+  line-height: 1.45;
+}
+
+.notif-date {
+  font-size: 11px;
+  color: #b0bec5;
+}
+
+// ---------- Actions: "Voir" + check button, stacked so nothing overlaps ----------
+.notif-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: center;
+}
+
+.notif-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #2E7D32;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 6px 11px;
+  border-radius: 8px;
+  transition: background 0.15s ease, gap 0.15s ease;
+
+  &:hover {
+    background: #eef6ef;
+    gap: 6px;
+    text-decoration: none;
+  }
+}
+
+.notif-link-arrow {
+  transition: transform 0.15s ease;
+}
+
+// Explicit "mark as read" tick button
+.notif-check {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0;
+}
+
+button.notif-check {
+  background: #fff;
+  border: 1.5px solid #c7dbc8;
+  color: #7fa682;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+
+  &:hover {
+    background: #2E7D32;
+    border-color: #2E7D32;
+    color: #fff;
+    transform: scale(1.08);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.notif-check-done {
+  background: #e8f5e9;
+  border: 1.5px solid transparent;
+  color: #2E7D32;
+  opacity: 0.7;
+}

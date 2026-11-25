@@ -1,0 +1,124 @@
+<div class="dashboard">
+  <div class="welcome-row">
+    <div>
+      <h1>Bonjour {{ premierPrenom() }} 👋</h1>
+      <p class="subtitle">Voici un aperçu des dossiers à traiter aujourd'hui</p>
+    </div>
+    <a routerLink="/agent/dossiers" class="btn-primary">Voir tous mes dossiers</a>
+  </div>
+
+  @if (loading()) {
+    <p class="loading-text">Chargement...</p>
+  } @else if (stats(); as s) {
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div>
+          <div class="stat-value">{{ s.aujourd_hui }}</div>
+          <div class="stat-label">Demandes aujourd'hui</div>
+        </div>
+      </div>
+      <div class="stat-card highlight">
+        <div class="stat-icon">⏳</div>
+        <div>
+          <div class="stat-value">{{ s.a_traiter }}</div>
+          <div class="stat-label">À traiter</div>
+        </div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-icon">✓</div>
+        <div>
+          <div class="stat-value">{{ s.validees }}</div>
+          <div class="stat-label">Validées</div>
+        </div>
+      </div>
+      <div class="stat-card danger">
+        <div class="stat-icon">✗</div>
+        <div>
+          <div class="stat-value">{{ s.rejetees }}</div>
+          <div class="stat-label">Rejetées</div>
+        </div>
+      </div>
+      <div class="stat-card info">
+        <div class="stat-icon">⏱</div>
+        <div>
+          <div class="stat-value">{{ s.delai_moyen_jours }}j</div>
+          <div class="stat-label">Délai moyen</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DOSSIERS PRIORITAIRES ===== -->
+    <div class="card priority-card">
+      <div class="card-header-row">
+        <h2>🔥 Dossiers prioritaires</h2>
+        <span class="card-subtitle">En attente depuis le plus longtemps</span>
+      </div>
+
+      @if (s.dossiers_prioritaires.length === 0) {
+        <p class="empty-text">Aucun dossier en attente. Tout est à jour ✓</p>
+      } @else {
+        <div class="priority-list">
+          @for (d of s.dossiers_prioritaires; track d.id) {
+            <a [routerLink]="['/agent/dossiers', d.id]" class="priority-row">
+              <div class="priority-info">
+                <div class="priority-numero">{{ d.numero_dossier }}</div>
+                <div class="priority-meta">
+                  {{ d.user?.name }} · {{ d.type_subvention?.nom_fr }}
+                </div>
+              </div>
+              <div class="priority-right">
+                <span class="priority-montant">{{ d.montant_demande | number }} DH</span>
+                @if (joursDepuisSoumission(d.date_soumission); as jours) {
+                  <span class="priority-delai" [class.urgent]="jours > 7">
+                    {{ jours }} jour{{ jours > 1 ? 's' : '' }}
+                  </span>
+                }
+              </div>
+            </a>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="charts-row">
+      <div class="card">
+        <h2>Répartition par statut</h2>
+        @if (s.par_statut.length === 0) {
+          <p class="empty-text">Aucune donnée disponible.</p>
+        } @else {
+          <div class="bar-chart">
+            @for (item of s.par_statut; track item.statut) {
+              <div class="bar-row">
+                <span class="bar-label">{{ statutsLabels[item.statut] || item.statut }}</span>
+                <div class="bar-track">
+                  <div class="bar-fill" [style.width.%]="pourcentageBarre(item.total)"></div>
+                </div>
+                <span class="bar-value">{{ item.total }}</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="card">
+        <h2>Évolution (7 derniers jours)</h2>
+        @if (s.evolution_7_jours.length === 0) {
+          <p class="empty-text">Aucune activité récente.</p>
+        } @else {
+          <div class="line-chart">
+            @for (item of s.evolution_7_jours; track item.date) {
+              <div class="line-bar-wrapper">
+                <div class="line-bar" [style.height.px]="item.total * 20 + 10"></div>
+                <span class="line-value">{{ item.total }}</span>
+                <span class="line-label">{{ item.date | date: 'dd/MM' }}</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+  }
+</div>

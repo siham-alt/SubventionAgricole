@@ -1,0 +1,76 @@
+<div class="page">
+  <div class="header-row">
+    <h1>Gestion des programmes</h1>
+    <button class="btn-primary" (click)="ouvrirCreation()">+ Nouveau programme</button>
+  </div>
+
+  @if (loading()) {
+    <p class="loading-text">Chargement...</p>
+  } @else {
+    <div class="programmes-grid">
+      @for (p of programmes(); track p.id) {
+        <div class="card programme-card">
+          <h3>{{ p.nom_fr }}</h3>
+          <p>{{ p.description_fr }}</p>
+          <div class="programme-meta">
+            <span class="badge">{{ p.taux_subvention }}%</span>
+            <span class="badge accent">{{ p.montant_max | number }} DH max</span>
+          </div>
+          <div class="programme-docs">
+            @for (doc of p.documents_requis; track doc) {
+              <span class="doc-tag">{{ documentsLabels[doc] || doc }}</span>
+            }
+          </div>
+          <div class="programme-actions">
+            <button class="btn-mini" (click)="ouvrirEdition(p)">Modifier</button>
+            <button class="btn-mini btn-danger" (click)="supprimer(p)">Supprimer</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (modalOuvert()) {
+    <div class="modal-overlay" (click)="fermerModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <h2>{{ modeEdition() ? 'Modifier le programme' : 'Nouveau programme' }}</h2>
+
+        <form [formGroup]="form" class="form-grid">
+          <div class="form-group full-width">
+            <label>Nom du programme</label>
+            <input type="text" formControlName="nom_fr" />
+          </div>
+          <div class="form-group full-width">
+            <label>Description</label>
+            <textarea formControlName="description_fr" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Montant maximal (DH)</label>
+            <input type="number" formControlName="montant_max" />
+          </div>
+          <div class="form-group">
+            <label>Taux de subvention (%)</label>
+            <input type="number" formControlName="taux_subvention" />
+          </div>
+
+          <div class="form-group full-width">
+            <label>Documents obligatoires</label>
+            <div class="checkbox-grid" formArrayName="documents_requis">
+              @for (doc of documentsDisponibles; track doc; let i = $index) {
+                <label class="checkbox-item">
+                  <input type="checkbox" [formControlName]="i" />
+                  {{ documentsLabels[doc] }}
+                </label>
+              }
+            </div>
+          </div>
+        </form>
+
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="fermerModal()">Annuler</button>
+          <button class="btn-primary" (click)="enregistrer()">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,169 @@
+<div class="page">
+  <h1>{{ vue() === 'actifs' ? 'Dossiers à traiter' : 'Historique de mes dossiers traités' }}</h1>
+
+  <div class="tabs">
+    <button class="tab" [class.active]="vue() === 'actifs'" (click)="changerVue('actifs')">📋 À traiter</button>
+    <button class="tab" [class.active]="vue() === 'historique'" (click)="changerVue('historique')">🗂 Historique</button>
+  </div>
+
+  <!-- ===== BARRE DE RECHERCHE + TRI ===== -->
+  <div class="filters-bar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Rechercher par référence, programme ou agriculteur..."
+      [value]="recherche()"
+      (input)="recherche.set($any($event.target).value)"
+    />
+
+    <select class="filter-select" [value]="tri()" (change)="tri.set($any($event.target).value)">
+      <option value="recent">Plus récent</option>
+      <option value="ancien">Plus ancien</option>
+      <option value="montant_desc">Montant décroissant</option>
+      <option value="montant_asc">Montant croissant</option>
+    </select>
+  </div>
+
+  <!-- ===== PANNEAU DE FILTRES AVANCÉS ===== -->
+  <div class="filters-panel">
+    <div class="filter-group">
+      <label>Statut</label>
+      <select [value]="filtreStatut()" (change)="filtreStatut.set($any($event.target).value)">
+        <option value="tous">Tous</option>
+        @for (statut of statutsDisponibles; track statut) {
+          <option [value]="statut">{{ statutsLabels[statut] }}</option>
+        }
+      </select>
+    </div>
+
+    @if (programmesDisponibles().length > 0) {
+      <div class="filter-group">
+        <label>Programme</label>
+        <select [value]="filtreProgramme()" (change)="filtreProgramme.set($any($event.target).value)">
+          <option value="tous">Tous</option>
+          @for (programme of programmesDisponibles(); track programme) {
+            <option [value]="programme">{{ programme }}</option>
+          }
+        </select>
+      </div>
+    }
+
+    @if (regionsDisponibles().length > 0) {
+      <div class="filter-group">
+        <label>Région</label>
+        <select [value]="filtreRegion()" (change)="filtreRegion.set($any($event.target).value)">
+          <option value="tous">Toutes</option>
+          @for (region of regionsDisponibles(); track region) {
+            <option [value]="region">{{ region }}</option>
+          }
+        </select>
+      </div>
+    }
+
+    <div class="filter-group">
+      <label>Période</label>
+      <div class="date-presets">
+        <button class="preset-btn" [class.active]="presetDate() === 'tous'" (click)="choisirPresetDate('tous')">Tous</button>
+        <button class="preset-btn" [class.active]="presetDate() === 'aujourdhui'" (click)="choisirPresetDate('aujourdhui')">Aujourd'hui</button>
+        <button class="preset-btn" [class.active]="presetDate() === 'semaine'" (click)="choisirPresetDate('semaine')">Cette semaine</button>
+        <button class="preset-btn" [class.active]="presetDate() === 'mois'" (click)="choisirPresetDate('mois')">Ce mois</button>
+        <button class="preset-btn" [class.active]="presetDate() === 'personnalise'" (click)="choisirPresetDate('personnalise')">Personnalisé</button>
+      </div>
+      @if (presetDate() === 'personnalise') {
+        <div class="date-range-inputs">
+          <input type="date" [value]="dateDebut()" (input)="dateDebut.set($any($event.target).value)" />
+          <span>→</span>
+          <input type="date" [value]="dateFin()" (input)="dateFin.set($any($event.target).value)" />
+        </div>
+      }
+    </div>
+
+    <div class="filter-group">
+      <label>Montant (DH)</label>
+      <div class="montant-range-inputs">
+        <input
+          type="number"
+          placeholder="Min"
+          [value]="montantMin()"
+          (input)="montantMin.set($any($event.target).value ? +$any($event.target).value : null)"
+        />
+        <span>—</span>
+        <input
+          type="number"
+          placeholder="Max"
+          [value]="montantMax()"
+          (input)="montantMax.set($any($event.target).value ? +$any($event.target).value : null)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CHIPS DES FILTRES ACTIFS ===== -->
+  @if (filtresActifs().length > 0) {
+    <div class="active-filters">
+      @for (chip of filtresActifs(); track chip.cle) {
+        <span class="filter-chip">
+          {{ chip.label }}
+          <button (click)="retirerFiltre(chip.cle)" aria-label="Retirer ce filtre">✕</button>
+        </span>
+      }
+      <button class="btn-reset-all" (click)="reinitialiserFiltres()">Tout réinitialiser</button>
+    </div>
+  }
+
+  <div class="results-count">
+    {{ dossiersFiltres.length }} dossier{{ dossiersFiltres.length > 1 ? 's' : '' }}
+  </div>
+
+  <div class="card">
+    @if (loading()) {
+      <p class="loading-text">Chargement...</p>
+    } @else if (dossiersFiltres.length === 0) {
+      <p class="empty-text">
+        @if (filtresActifs().length > 0) {
+          Aucun dossier ne correspond à ces filtres.
+        } @else {
+          {{ vue() === 'actifs' ? 'Aucun dossier à traiter pour le moment.' : "Aucun dossier dans l'historique." }}
+        }
+      </p>
+    } 
+    
+    @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Référence</th>
+            <th>Agriculteur</th>
+            <th>Programme</th>
+            <th>Date</th>
+            <th>Montant</th>
+            <th>Statut</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (d of dossiersFiltres; track d.id) {
+         <tr [routerLink]="['/agent/dossiers', d.id]" class="row-clickable" [class.row-priorite]="aDesDocumentsRenvoyes(d)">
+  <td class="numero">
+    {{ d.numero_dossier }}
+    @if (aDesDocumentsRenvoyes(d)) {
+      <span class="badge-maj">🔄 Mis à jour</span>
+    }
+  </td>
+  <td>{{ d.user?.name }}</td>
+  <td>{{ d.type_subvention?.nom_fr }}</td>
+  <td>{{ d.created_at | date: 'dd/MM/yyyy' }}</td>
+  <td>{{ d.montant_demande | number }} DH</td>
+  <td>
+    <span class="statut-badge" [style.background]="statutsCouleurs[d.statut]">
+      {{ statutsLabels[d.statut] }}
+    </span>
+  </td>
+  <td><span class="link-detail">{{ vue() === 'actifs' ? 'Traiter →' : 'Voir →' }}</span></td>
+</tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

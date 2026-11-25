@@ -1,0 +1,385 @@
+<div class="page">
+  <h1>Nouvelle demande de subvention</h1>
+
+  <div class="stepper">
+    @for (num of [1,2,3,4]; track num) {
+      <div class="step" [class.active]="etapeActuelle() >= num" [class.done]="etapeActuelle() > num">
+        <span class="step-number">{{ num }}</span>
+        <span class="step-label">
+          {{ num === 1 ? 'Subvention' : num === 2 ? 'Informations' : num === 3 ? 'Documents' : 'Résumé' }}
+        </span>
+      </div>
+      @if (num < 4) {
+        <div class="step-line" [class.done]="etapeActuelle() > num"></div>
+      }
+    }
+  </div>
+
+  @if (errorMessage()) {
+    <div class="alert alert-danger">{{ errorMessage() }}</div>
+  }
+
+  <!-- ÉTAPE 1 : Choisir la subvention -->
+  @if (etapeActuelle() === 1) {
+    <div class="card">
+      <h2>Choisissez le programme de subvention</h2>
+      <div class="programmes-grid">
+        @for (type of typesSubvention(); track type.id) {
+          <div class="programme-card" [class.selected]="typeSelectionne()?.id === type.id" (click)="selectionnerType(type)">
+            <h3>{{ type.nom_fr }}</h3>
+            <p>{{ type.description_fr }}</p>
+            <div class="programme-meta">
+              <span class="badge-taux">{{ type.taux_subvention }}%</span>
+              @if (type.montant_max) {
+                <span class="badge-montant">Max {{ type.montant_max | number }} DH</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+      <div class="actions-row actions-end">
+        <button class="btn-primary" (click)="passerEtape2()">Suivant →</button>
+      </div>
+    </div>
+  }
+@if (etapeActuelle() === 2) {
+  <div class="card">
+    <h2>Informations sur votre exploitation et projet</h2>
+
+    @if (exploitations().length > 0) {
+      <div class="exploitations-quick">
+        <p class="quick-label">Utiliser une exploitation existante :</p>
+        <div class="exploitations-chips">
+          @for (exp of exploitations(); track exp.id) {
+            <button
+              type="button"
+              class="chip"
+              [class.selected]="formInfos.value.exploitation_id === exp.id"
+              (click)="choisirExploitation(exp.id)"
+            >
+              {{ exp.nom_exploitation }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+
+    <form [formGroup]="formInfos" class="form-sections">
+
+      <!-- ===== EXPLOITATION ===== -->
+      <fieldset class="form-fieldset">
+        <legend>🌾 Exploitation</legend>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Nom de l'exploitation</label>
+            <input type="text" formControlName="nom_exploitation" placeholder="Ferme Al Baraka" />
+          </div>
+          <div class="form-group">
+            <label>Type d'exploitation</label>
+            <select formControlName="type_exploitation">
+              <option value="cereales">Céréales</option>
+              <option value="elevage">Élevage</option>
+              <option value="maraichage">Maraîchage</option>
+              <option value="arboriculture">Arboriculture</option>
+              <option value="apiculture">Apiculture</option>
+              <option value="aquaculture">Aquaculture</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Surface (hectares)</label>
+            <input type="number" formControlName="superficie_hectares" placeholder="5.5" />
+          </div>
+          <div class="form-group">
+            <label>Région</label>
+            <select formControlName="region" (change)="onRegionChange()">
+              <option value="" disabled>Sélectionnez une région</option>
+              @for (region of regions; track region.nom) {
+                <option [value]="region.nom">{{ region.nom }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Province</label>
+            <select formControlName="province" (change)="onProvinceChange()">
+              <option value="" disabled>Sélectionnez une province</option>
+              @for (province of availableProvinces; track province.nom) {
+                <option [value]="province.nom">{{ province.nom }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Commune</label>
+            <input type="text" formControlName="commune" placeholder="Toulal" list="communes-suggestions" />
+            <datalist id="communes-suggestions">
+              @for (commune of availableCommunes; track commune) {
+                <option [value]="commune"></option>
+              }
+            </datalist>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- ===== IDENTITÉ JURIDIQUE ===== -->
+      <fieldset class="form-fieldset">
+        <legend>🪪 Identité juridique</legend>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Statut juridique</label>
+            <select formControlName="statut_juridique">
+              <option value="physique">Personne physique</option>
+              <option value="cooperative">Coopérative</option>
+              <option value="gie">GIE</option>
+              <option value="societe">Société agricole</option>
+            </select>
+          </div>
+          @if (afficherRepresentantLegal) {
+            <div class="form-group">
+              <label>Nom du représentant légal</label>
+              <input type="text" formControlName="nom_representant_legal" placeholder="Nom complet" />
+            </div>
+            <div class="form-group">
+              <label>N° d'immatriculation</label>
+              <input type="text" formControlName="numero_immatriculation" placeholder="RC / N° coopérative" />
+            </div>
+          }
+          <div class="form-group">
+            <label>N° CNSS (optionnel)</label>
+            <input type="text" formControlName="numero_cnss" placeholder="123456789" />
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- ===== STATUT FONCIER ===== -->
+      <fieldset class="form-fieldset">
+        <legend>📜 Statut foncier</legend>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mode de tenure</label>
+            <select formControlName="mode_tenure">
+              <option value="proprietaire">Propriétaire</option>
+              <option value="locataire">Locataire</option>
+              <option value="melk">Melk</option>
+              <option value="collectif">Terrain collectif</option>
+              <option value="domaine_etat">Domaine de l'État</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>N° titre foncier</label>
+            <input type="text" formControlName="numero_titre_foncier" placeholder="TF 12345/M" />
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- ===== DÉTAILS TECHNIQUES DU PROJET ===== -->
+      <fieldset class="form-fieldset">
+        <legend>🔧 Détails techniques du projet</legend>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Type d'équipement / investissement</label>
+            <input type="text" formControlName="type_equipement" placeholder="Ex : forage + pompe solaire" />
+          </div>
+          <div class="form-group">
+            <label>Nombre d'unités concernées</label>
+            <input type="number" formControlName="nombre_unites" placeholder="Ex : 50 têtes, 200 plants..." />
+          </div>
+          <div class="form-group">
+            <label>Coût total du projet (DH)</label>
+            <input type="number" formControlName="cout_total_projet" placeholder="200000" />
+          </div>
+          <div class="form-group">
+            <label>Apport personnel (DH)</label>
+            <input type="number" formControlName="apport_personnel" placeholder="50000" />
+          </div>
+          <div class="form-group">
+            <label>Montant demandé (DH)</label>
+            <input type="number" formControlName="montant_demande" placeholder="150000" />
+          </div>
+          <div class="form-group">
+            <label>Date de début prévue</label>
+            <input type="date" formControlName="date_debut_prevue" />
+          </div>
+          <div class="form-group">
+            <label>Date de fin prévue</label>
+            <input type="date" formControlName="date_fin_prevue" />
+          </div>
+        </div>
+        <div class="form-group full-width">
+          <label>Description du projet</label>
+          <textarea formControlName="description_projet" rows="4" placeholder="Décrivez votre projet..."></textarea>
+        </div>
+      </fieldset>
+
+      <!-- ===== INFORMATIONS BANCAIRES ===== -->
+      <fieldset class="form-fieldset">
+        <legend>🏦 Informations bancaires</legend>
+        <p class="fieldset-note">Nécessaires pour le versement de la subvention en cas d'approbation.</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>RIB (24 chiffres)</label>
+            <input type="text" formControlName="rib" placeholder="123456789012345678901234" maxlength="24" />
+          </div>
+          <div class="form-group">
+            <label>Banque</label>
+            <input type="text" formControlName="nom_banque" placeholder="Ex : Crédit Agricole du Maroc" />
+          </div>
+          <div class="form-group">
+            <label>Agence</label>
+            <input type="text" formControlName="agence_bancaire" placeholder="Agence Meknès Centre" />
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- ===== ANTÉCÉDENTS ===== -->
+      <fieldset class="form-fieldset">
+        <legend>📋 Antécédents</legend>
+        <label class="checkbox-row">
+          <input type="checkbox" formControlName="a_deja_beneficie" />
+          J'ai déjà bénéficié d'une subvention agricole auparavant
+        </label>
+        @if (formInfos.value.a_deja_beneficie) {
+          <div class="form-group">
+            <label>Référence de la subvention précédente</label>
+            <input type="text" formControlName="reference_subvention_precedente" placeholder="SUB-2024-00123" />
+          </div>
+        }
+      </fieldset>
+
+      <!-- ===== CONTACT PROJET ===== -->
+      <fieldset class="form-fieldset">
+        <legend>📞 Contact pour ce projet (si différent de votre profil)</legend>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Téléphone</label>
+            <input type="text" formControlName="telephone_contact_projet" placeholder="0612345678" />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" formControlName="email_contact_projet" placeholder="contact@exemple.com" />
+          </div>
+        </div>
+      </fieldset>
+
+    </form>
+
+    <div class="actions-row">
+      <button class="btn-secondary" (click)="retourEtape(1)">← Retour</button>
+      <button class="btn-primary" (click)="passerEtape3()" [disabled]="loading()">
+        {{ loading() ? 'Création...' : 'Suivant →' }}
+      </button>
+    </div>
+  </div>
+}
+  <!-- ÉTAPE 3 : Documents (drag & drop) -->
+  @if (etapeActuelle() === 3) {
+    <div class="card">
+      <h2>Téléchargement des pièces justificatives</h2>
+
+      <div class="documents-list">
+        @for (docType of documentsRequis(); track docType) {
+          <div
+            class="dropzone"
+            [class.done]="documentsUploades()[docType]?.ok"
+            [class.dragging]="glisserActif()"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave()"
+            (drop)="onDrop($event, docType)"
+          >
+            <div class="dropzone-info">
+              <span class="dropzone-icon">
+                {{ documentsUploades()[docType]?.ok ? '✅' : '📎' }}
+              </span>
+              <div>
+                <div class="dropzone-title">{{ documentsLabels[docType] || docType }}</div>
+                @if (documentsUploades()[docType]?.ok) {
+                  <div class="dropzone-filename">{{ documentsUploades()[docType].nom }}</div>
+                } @else {
+                  <div class="dropzone-hint">Glissez votre fichier ici ou</div>
+                }
+              </div>
+            </div>
+
+            @if (uploadingType() === docType) {
+              <span class="uploading-text">Envoi...</span>
+            } @else if (!documentsUploades()[docType]?.ok) {
+              <label class="btn-parcourir">
+                Parcourir
+                <input type="file" accept=".pdf,.jpg,.jpeg,.png" (change)="onFichierSelectionne($event, docType)" hidden />
+              </label>
+            } @else {
+              <label class="btn-remplacer">
+                Remplacer
+                <input type="file" accept=".pdf,.jpg,.jpeg,.png" (change)="onFichierSelectionne($event, docType)" hidden />
+              </label>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="actions-row">
+        <button class="btn-secondary" (click)="retourEtape(2)">← Retour</button>
+        <button class="btn-primary" (click)="passerEtape4()" [disabled]="!tousDocumentsUploades()">
+          Suivant →
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ÉTAPE 4 : Résumé -->
+  @if (etapeActuelle() === 4) {
+    <div class="card">
+      <h2>Résumé de votre demande</h2>
+
+      <div class="resume-section">
+        <h3>Programme choisi</h3>
+        <p>{{ typeSelectionne()?.nom_fr }}</p>
+      </div>
+
+      <div class="resume-section">
+        <h3>Exploitation</h3>
+        <p>{{ formInfos.value.nom_exploitation }} — {{ formInfos.value.superficie_hectares }} ha</p>
+        <p class="text-muted">{{ formInfos.value.commune }}, {{ formInfos.value.province }}</p>
+      </div>
+
+      <div class="resume-section">
+        <h3>Montant demandé</h3>
+        <p class="montant-highlight">{{ formInfos.value.montant_demande | number }} DH</p>
+      </div>
+
+      @if (formInfos.value.description_projet) {
+        <div class="resume-section">
+          <h3>Description du projet</h3>
+          <p>{{ formInfos.value.description_projet }}</p>
+        </div>
+      }
+
+      <div class="resume-section">
+        <h3>Documents joints</h3>
+        <ul class="resume-documents">
+          @for (docType of documentsRequis(); track docType) {
+            <li>✅ {{ documentsLabels[docType] }} — {{ documentsUploades()[docType]?.nom }}</li>
+          }
+        </ul>
+      </div>
+      <div class="resume-section">
+  <h3>Financement</h3>
+  <p>Coût total : {{ formInfos.value.cout_total_projet | number }} DH</p>
+  <p>Apport personnel : {{ formInfos.value.apport_personnel | number }} DH</p>
+  <p class="montant-highlight">Montant demandé : {{ formInfos.value.montant_demande | number }} DH</p>
+</div>
+
+<div class="resume-section">
+  <h3>Coordonnées bancaires</h3>
+  <p>{{ formInfos.value.nom_banque }} — {{ formInfos.value.agence_bancaire }}</p>
+  <p class="text-muted">RIB : {{ formInfos.value.rib }}</p>
+</div>
+
+      <div class="actions-row">
+        <button class="btn-secondary" (click)="retourEtape(3)">← Retour</button>
+        <button class="btn-primary btn-submit" (click)="soumettreDossier()" [disabled]="loading()">
+          {{ loading() ? 'Envoi en cours...' : '✓ Soumettre ma demande' }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

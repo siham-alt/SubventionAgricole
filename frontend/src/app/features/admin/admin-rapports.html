@@ -1,0 +1,70 @@
+<div class="page">
+  <h1>Rapports</h1>
+  <p class="subtitle">Filtrez et exportez les données des dossiers selon vos critères</p>
+
+  <div class="card filters-card">
+    <h2>Filtres</h2>
+    <form [formGroup]="form" class="form-grid">
+      <div class="form-group">
+        <label>Mois</label>
+        <input type="month" formControlName="mois" />
+      </div>
+      <div class="form-group">
+        <label>Statut</label>
+        <select formControlName="statut">
+          <option value="">Tous les statuts</option>
+          @for (key of statutsKeys; track key) {
+            <option [value]="key">{{ statutsLabels[key] }}</option>
+          }
+        </select>
+      </div>
+    <div class="form-group">
+  <label>Région</label>
+  <select formControlName="region">
+    <option value="">Toutes les régions</option>
+    @for (r of regions; track r.nom) {
+      <option [value]="r.nom">{{ r.nom }}</option>
+    }
+  </select>
+</div>
+      <div class="form-group">
+        <label>Programme</label>
+        <select formControlName="type_subvention_id">
+          <option value="">Tous les programmes</option>
+          @for (t of typesSubvention(); track t.id) {
+            <option [value]="t.id">{{ t.nom_fr }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date début</label>
+        <input type="date" formControlName="date_debut" />
+      </div>
+      <div class="form-group">
+        <label>Date fin</label>
+        <input type="date" formControlName="date_fin" />
+      </div>
+    </form>
+    <button class="btn-link" (click)="reinitialiser()">Réinitialiser les filtres</button>
+  </div>
+
+  <div class="rapports-grid">
+    <div class="card rapport-card">
+      <div class="rapport-icon">📊</div>
+      <h3>Export Excel</h3>
+      <p>Tableau des dossiers correspondant aux filtres sélectionnés.</p>
+      <button class="btn-primary" (click)="telecharger('excel')" [disabled]="telechargementEnCours() === 'excel'">
+        {{ telechargementEnCours() === 'excel' ? 'Génération...' : 'Télécharger (.xlsx)' }}
+      </button>
+    </div>
+
+    <div class="card rapport-card">
+      <div class="rapport-icon">📄</div>
+      <h3>Export PDF</h3>
+      <p>Document formaté prêt à imprimer ou partager.</p>
+      <button class="btn-primary btn-accent" (click)="telecharger('pdf')" [disabled]="telechargementEnCours() === 'pdf'">
+        {{ telechargementEnCours() === 'pdf' ? 'Génération...' : 'Télécharger (.pdf)' }}
+      </button>
+    </div>
+  </div>
+</div>

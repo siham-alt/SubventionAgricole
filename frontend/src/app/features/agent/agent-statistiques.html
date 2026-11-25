@@ -1,0 +1,78 @@
+<div class="page">
+  <h1>Mes statistiques</h1>
+  <p class="subtitle">Suivi de votre activité et performance de traitement</p>
+
+  @if (loading()) {
+    <p class="loading-text">Chargement...</p>
+  } @else if (stats(); as s) {
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">{{ s.dossiers_traites }}</div>
+        <div class="stat-label">Dossiers traités (total)</div>
+      </div>
+      <div class="stat-card highlight">
+        <div class="stat-value">{{ s.dossiers_en_cours }}</div>
+        <div class="stat-label">En cours actuellement</div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-value">{{ s.dossiers_approuves }}</div>
+        <div class="stat-label">Approuvés</div>
+      </div>
+      <div class="stat-card danger">
+        <div class="stat-value">{{ s.dossiers_refuses }}</div>
+        <div class="stat-label">Refusés</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ s.delai_moyen_jours }}j</div>
+        <div class="stat-label">Délai moyen de traitement</div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <div class="card">
+        <h2>Mon activité (7 derniers jours)</h2>
+        <div class="line-chart">
+          @for (item of s.activite_7_jours; track item.date) {
+            <div class="line-bar-wrapper">
+              <div class="line-bar" [style.height.px]="hauteurActivite(item.total)"></div>
+              <span class="line-label">{{ item.date | date: 'dd/MM' }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Répartition de mes dossiers par statut</h2>
+        <div class="bar-chart">
+          @for (item of s.par_statut; track item.statut) {
+            <div class="bar-row">
+              <span class="bar-label">{{ statutsLabels[item.statut] || item.statut }}</span>
+              <div class="bar-track">
+                <div class="bar-fill" [style.width.%]="pourcentageStatut(item.total)"></div>
+              </div>
+              <span class="bar-value">{{ item.total }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>⚠ Dossiers en attente les plus anciens</h2>
+      <p class="hint">Ces dossiers attendent un traitement depuis le plus longtemps — à prioriser.</p>
+      <div class="priorite-list">
+        @for (d of s.dossiers_prioritaires; track d.id) {
+          <a [routerLink]="['/agent/dossiers', d.id]" class="priorite-row">
+            <div>
+              <span class="priorite-numero">{{ d.numero_dossier }}</span>
+              <span class="priorite-type">{{ d.type_subvention?.nom_fr }}</span>
+            </div>
+            <span class="priorite-jours" [class.urgent]="joursDepuisSoumission(d.date_soumission) > 15">
+              {{ joursDepuisSoumission(d.date_soumission) }} jours d'attente
+            </span>
+          </a>
+        }
+      </div>
+    </div>
+  }
+</div>

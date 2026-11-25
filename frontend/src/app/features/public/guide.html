@@ -1,0 +1,83 @@
+<app-navbar />
+
+<div class="guide-page">
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <span class="hero-eyebrow">Guide du dépôt</span>
+    <h1>Du dépôt au versement,<br />étape par étape</h1>
+    <p class="hero-lede">
+      Six étapes séparent votre demande de son versement. Voici ce qui se passe
+      à chacune d'elles, et ce qu'on attend de vous.
+    </p>
+    <a routerLink="/agriculteur/demandes/nouvelle" class="hero-cta">Déposer ma demande →</a>
+  </section>
+
+  <!-- ===== TIMELINE / SIGNATURE ELEMENT ===== -->
+  <section class="parcours">
+    <div class="tige" aria-hidden="true"></div>
+
+    <ol class="etapes-list">
+      @for (etape of etapes; track etape.numero; let i = $index) {
+        <li class="etape" [class.ouverte]="etapeOuverte() === i">
+          <button
+            type="button"
+            class="etape-header"
+            (click)="toggle(i)"
+            [attr.aria-expanded]="etapeOuverte() === i"
+          >
+            <span class="etape-noeud">{{ etape.numero }}</span>
+            <span class="etape-titre">{{ etape.titre }}</span>
+            <span class="etape-chevron">{{ etapeOuverte() === i ? '−' : '+' }}</span>
+          </button>
+
+          @if (etapeOuverte() === i) {
+            <div class="etape-corps">
+              <p>{{ etape.description }}</p>
+              <ul>
+                @for (point of etape.points; track point) {
+                  <li>{{ point }}</li>
+                }
+              </ul>
+              @if (etape.statutLie) {
+                <span class="etape-statut">statut associé : {{ etape.statutLie }}</span>
+              }
+            </div>
+          }
+        </li>
+      }
+    </ol>
+  </section>
+
+  <!-- ===== CONSEILS PRATIQUES ===== -->
+  <section class="conseils">
+    <h2>Avant de commencer</h2>
+    <div class="conseils-grid">
+      <div class="conseil-card">
+        <span class="conseil-icone">📎</span>
+        <h3>Documents lisibles</h3>
+        <p>Scannez ou photographiez vos pièces à plat, en couleur, sans reflet. Formats acceptés : PDF, JPG, PNG.</p>
+      </div>
+      <div class="conseil-card">
+        <span class="conseil-icone">🏦</span>
+        <h3>RIB à votre nom</h3>
+        <p>Le compte bancaire doit être au nom du demandeur ou de la structure juridique déclarée dans le dossier.</p>
+      </div>
+      <div class="conseil-card">
+        <span class="conseil-icone">🔔</span>
+        <h3>Activez les notifications</h3>
+        <p>Chaque changement de statut vous est signalé. Un complément non traité peut retarder votre dossier.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LIEN VERS FAQ / CONTACT ===== -->
+  <section class="suite">
+    <p>Une question sur un statut ou un document précis&nbsp;?</p>
+    <div class="suite-liens">
+      <a routerLink="/agriculteur/faq" class="lien-secondaire">Consulter la FAQ</a>
+      <a routerLink="/agriculteur/contact" class="lien-secondaire">Contacter un agent</a>
+    </div>
+  </section>
+
+</div>

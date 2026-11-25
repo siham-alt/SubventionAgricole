@@ -1,0 +1,53 @@
+<div class="page">
+  <h1>Mes documents</h1>
+  <p class="subtitle">Retrouvez et gérez tous vos documents déposés</p>
+
+  @if (documentsRefusesCount > 0) {
+    <div class="alert-refuse">
+      ⚠ {{ documentsRefusesCount }} document(s) refusé(s) nécessitent votre attention
+    </div>
+  }
+
+  <div class="filters-row">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="🔍 Rechercher un document..."
+      [value]="recherche()"
+      (input)="recherche.set($any($event.target).value)"
+    />
+    <div class="filter-chips">
+      <button class="chip" [class.active]="filtreStatut() === 'tous'" (click)="filtreStatut.set('tous')">Tous</button>
+      <button class="chip" [class.active]="filtreStatut() === 'valide'" (click)="filtreStatut.set('valide')">Validés</button>
+      <button class="chip danger" [class.active]="filtreStatut() === 'refuse'" (click)="filtreStatut.set('refuse')">Refusés</button>
+      <button class="chip" [class.active]="filtreStatut() === 'en_attente'" (click)="filtreStatut.set('en_attente')">En attente</button>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <p class="loading-text">Chargement...</p>
+  } @else if (documentsFiltres().length === 0) {
+    <div class="card empty-state"><p>Aucun document trouvé.</p></div>
+  } @else {
+    <div class="documents-grid">
+      @for (doc of documentsFiltres(); track doc.id) {
+        <div class="document-card" [class]="doc.statut_verification">
+          <span class="document-icon">📄</span>
+          <div class="document-details">
+            <div class="document-nom">{{ documentsLabels[doc.type_document] || doc.type_document }}</div>
+            <div class="document-fichier">{{ doc.nom_original }}</div>
+            <a [routerLink]="['/agriculteur/demandes', doc.dossier_id]" class="document-dossier-link">
+              {{ doc.dossier_numero }}
+            </a>
+            @if (doc.commentaire_agent) {
+              <div class="document-motif">💬 {{ doc.commentaire_agent }}</div>
+            }
+          </div>
+          <span class="statut-chip" [class]="doc.statut_verification">
+            {{ doc.statut_verification === 'valide' ? '✓' : doc.statut_verification === 'refuse' ? '✗' : '⏳' }}
+          </span>
+        </div>
+      }
+    </div>
+  }
+</div>

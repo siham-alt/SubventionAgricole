@@ -1,0 +1,88 @@
+<div class="page">
+  <div class="header-row">
+    <h1>Mes demandes</h1>
+    <a routerLink="/agriculteur/demandes/nouvelle" class="btn-primary">+ Nouvelle demande</a>
+  </div>
+
+  <div class="filters-row">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Rechercher par référence..."
+      [value]="recherche()"
+      (input)="recherche.set($any($event.target).value)"
+    />
+    <select class="filter-select" [value]="filtreStatut()" (change)="filtreStatut.set($any($event.target).value)">
+      <option value="tous">Tous les statuts</option>
+      <option value="brouillon">Brouillon</option>
+      <option value="soumis">Soumis</option>
+      <option value="en_cours_verification">En cours de vérification</option>
+      <option value="complement_demande">Complément demandé</option>
+      <option value="approuve">Approuvé</option>
+      <option value="refuse">Refusé</option>
+      <option value="paye">Payé</option>
+    </select>
+  </div>
+
+  <div class="card">
+    @if (loading()) {
+      <p class="loading-text">Chargement...</p>
+    } @else if (dossiersFiltres.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">📁</div>
+        <p>Aucune demande trouvée.</p>
+      </div>
+    } @else {
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Référence</th>
+            <th>Programme</th>
+            <th>Date</th>
+            <th>Montant</th>
+            <th>Statut</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (d of dossiersFiltres; track d.id) {
+            @if (d.statut === 'brouillon') {
+              <tr class="row-clickable">
+                <td class="numero">
+                  {{ d.numero_dossier }}
+                  <span class="tag-brouillon">Brouillon</span>
+                </td>
+                <td>{{ d.type_subvention?.nom_fr }}</td>
+                <td>{{ d.created_at | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ d.montant_demande | number }} DH</td>
+                <td>
+                  <span class="statut-badge" [style.background]="statutsCouleurs[d.statut]">
+                    {{ statutsLabels[d.statut] }}
+                  </span>
+                </td>
+                <td>
+                  <a [routerLink]="['/agriculteur/demandes/nouvelle']" [queryParams]="{ dossier: d.id }" class="link-continuer">
+                    Continuer →
+                  </a>
+                </td>
+              </tr>
+            } @else {
+              <tr class="row-clickable" [routerLink]="['/agriculteur/demandes', d.id]">
+                <td class="numero">{{ d.numero_dossier }}</td>
+                <td>{{ d.type_subvention?.nom_fr }}</td>
+                <td>{{ d.created_at | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ d.montant_demande | number }} DH</td>
+                <td>
+                  <span class="statut-badge" [style.background]="statutsCouleurs[d.statut]">
+                    {{ statutsLabels[d.statut] }}
+                  </span>
+                </td>
+                <td><span class="link-detail">Voir →</span></td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

@@ -1,0 +1,116 @@
+<div class="dashboard">
+  <div class="welcome-row">
+    <div>
+      <h1>Bonjour {{ premierPrenom() }} 👋</h1>
+      <p class="subtitle">Bienvenue sur votre espace de gestion des subventions agricoles</p>
+    </div>
+    <a routerLink="/agriculteur/demandes/nouvelle" class="btn-primary">+ Nouvelle demande</a>
+  </div>
+
+  <!-- ===== CARTES INTERACTIVES ===== -->
+  <div class="cards-grid">
+    <a routerLink="/agriculteur/demandes" class="action-card">
+      <div class="action-icon" style="background:#e8f5e9;">📄</div>
+      <div class="action-title">Mes demandes</div>
+      <div class="action-value">{{ totalDemandes() }} dossier{{ totalDemandes() > 1 ? 's' : '' }}</div>
+    </a>
+
+    <a routerLink="/agriculteur/programmes" class="action-card">
+      <div class="action-icon" style="background:#fdf6e3;">💰</div>
+      <div class="action-title">Programmes</div>
+      <div class="action-value">Subventions disponibles</div>
+    </a>
+
+    <a routerLink="/agriculteur/documents" class="action-card">
+      <div class="action-icon" style="background:#e3f2fd;">📁</div>
+      <div class="action-title">Documents</div>
+      <div class="action-value">Gérer mes fichiers</div>
+    </a>
+
+    <a routerLink="/agriculteur/notifications" class="action-card">
+      <div class="action-icon" style="background:#fdecea;">🔔</div>
+      <div class="action-title">Notifications</div>
+      <div class="action-value">Voir les alertes</div>
+    </a>
+  </div>
+
+  <!-- ===== BOUTONS D'ACTION RAPIDE ===== -->
+  <div class="quick-actions">
+    <a routerLink="/agriculteur/demandes/nouvelle" class="quick-btn">
+      <span>➕</span> Nouvelle demande
+    </a>
+    <a routerLink="/agriculteur/documents" class="quick-btn">
+      <span>📤</span> Téléverser un document
+    </a>
+    <a routerLink="/agriculteur/demandes" class="quick-btn">
+      <span>📋</span> Voir mes dossiers
+    </a>
+  </div>
+
+  <div class="main-grid">
+    <!-- ===== TIMELINE DES DOSSIERS ===== -->
+    <div class="card">
+      <div class="table-header">
+        <h2>Dernières demandes</h2>
+        <a routerLink="/agriculteur/demandes" class="link-voir-tout">Voir tout →</a>
+      </div>
+
+      @if (loading()) {
+        <p class="loading-text">Chargement...</p>
+      } @else if (dernieresDemandes().length === 0) {
+        <div class="empty-state">
+          <p>Vous n'avez pas encore déposé de demande.</p>
+          <a routerLink="/agriculteur/demandes/nouvelle" class="btn-primary">Déposer ma première demande</a>
+        </div>
+      } @else {
+        <div class="dossiers-list">
+          @for (d of dernieresDemandes(); track d.id) {
+            <a [routerLink]="['/agriculteur/demandes', d.id]" class="dossier-card">
+              <div class="dossier-header">
+                <div>
+                  <div class="dossier-titre">{{ d.type_subvention?.nom_fr || 'Subvention' }}</div>
+                  <div class="dossier-ref">Référence : {{ d.numero_dossier }}</div>
+                </div>
+                <span class="statut-badge" [style.background]="statutsCouleurs[d.statut]">
+                  {{ statutsLabels[d.statut] }}
+                </span>
+              </div>
+
+              <div class="dossier-timeline">
+                @for (etape of etapesDossier(d.statut); track etape.cle) {
+                  <div class="timeline-step" [class.done]="etape.fait" [class.current]="etape.actuel">
+                    <span class="timeline-dot">{{ etape.fait ? '✓' : '●' }}</span>
+                    <span class="timeline-label">{{ etape.label }}</span>
+                  </div>
+                }
+              </div>
+            </a>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- ===== FIL D'ACTIVITÉ ===== -->
+    <div class="card activity-card">
+      <h2>Activité récente</h2>
+
+      @if (loading()) {
+        <p class="loading-text">Chargement...</p>
+      } @else if (activiteRecente().length === 0) {
+        <p class="empty-text">Aucune activité récente.</p>
+      } @else {
+        <div class="activity-feed">
+          @for (item of activiteRecente(); track item.id) {
+            <div class="activity-item">
+              <span class="activity-icon">✓</span>
+              <div>
+                <div class="activity-text">{{ item.texte }}</div>
+                <div class="activity-date">{{ item.date | date: 'dd MMMM' }}</div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>
